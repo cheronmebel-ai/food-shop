@@ -1,9 +1,18 @@
-const CACHE = 'food-shop-v1';
+const CACHE = 'food-shop-v2';
 const ASSETS = ['/', '/index.html', '/account.html', '/manifest.json', '/icon-192.png'];
 
 self.addEventListener('install',  e => { e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS))); self.skipWaiting(); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k))))); self.clients.claim(); });
-self.addEventListener('fetch',    e => { if(e.request.url.includes('/api/')) return; e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))); });
+
+self.addEventListener('fetch', e => {
+  const url = e.request.url;
+  if (e.request.method !== 'GET') return;
+  if (url.includes('/api/')) return;
+  if (url.includes('/admin')) return;
+  if (url.startsWith('chrome-extension')) return;
+  if (!url.startsWith('http')) return;
+  e.respondWith(caches.match(e.request).then(r => r || fetch(e.request).catch(() => caches.match('/'))));
+});
 
 self.addEventListener('push', e => {
   let d = { title:'🍕 Уведомление', body:'', url:'/', unread:0, silent:false };
