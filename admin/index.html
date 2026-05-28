@@ -1,11 +1,4 @@
 <!DOCTYPE html>
-<script>
-(function(){
-  var p = sessionStorage.getItem('ap');
-  if(!p){ p = prompt('Пароль администратора:'); if(!p){location.href='/';return;} sessionStorage.setItem('ap',p); }
-  window._ADMIN_PASS = p;
-})();
-</script>
 <html lang="ru">
 <head>
 <meta charset="UTF-8"/>
