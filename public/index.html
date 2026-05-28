@@ -730,7 +730,29 @@ function updateDeliveryPrice() {
 }
 
 // ── Order ──────────────────────────────────────────────────────────────────
-function showOrderForm() { document.getElementById('order-form').classList.add('visible'); document.querySelector('#order-form-wrap>.btn-green').style.display='none'; }
+async function showOrderForm() {
+  document.getElementById('order-form').classList.add('visible');
+  document.querySelector('#order-form-wrap>.btn-green').style.display='none';
+  const token = localStorage.getItem('auth_token');
+  if (token) {
+    try {
+      const nameEl = document.getElementById('o-name');
+      const phoneEl = document.getElementById('o-phone');
+      const cachedName = localStorage.getItem('user_name');
+      const cachedPhone = localStorage.getItem('user_phone');
+      if (cachedName && !nameEl.value) nameEl.value = cachedName;
+      if (cachedPhone && !phoneEl.value) phoneEl.value = cachedPhone;
+      const r = await fetch('/api/user/profile', { headers:{'Authorization':'Bearer '+token} });
+      if (r.ok) {
+        const u = await r.json();
+        if (u.name && !nameEl.value) nameEl.value = u.name;
+        if (u.phone && !phoneEl.value) phoneEl.value = u.phone;
+        if (u.name) localStorage.setItem('user_name', u.name);
+        if (u.phone) localStorage.setItem('user_phone', u.phone);
+      }
+    } catch {}
+  }
+}
 function hideOrderForm() { document.getElementById('order-form').classList.remove('visible'); document.querySelector('#order-form-wrap>.btn-green').style.display=''; }
 function selectPay(el, val) { document.querySelectorAll('.pay-option').forEach(x=>x.classList.remove('selected')); el.classList.add('selected'); selectedPayment=val; document.getElementById('online-pay-note').style.display=val==='online'?'block':'none'; }
 
