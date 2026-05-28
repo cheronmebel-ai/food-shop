@@ -395,18 +395,18 @@ let TOKEN='', allOrders=[], editProdId=null, newImages=[], existImages=[], pushH
 
 // ── Auth ─────────────────────────────────────────────────────────────────
 async function login() {
-  TOKEN = window._ADMIN_PASS || sessionStorage.getItem('ap') || '';
-  const r = await fetch('/api/admin/stats',{headers:{'Authorization':'Bearer '+TOKEN}});
+  const pass = document.getElementById('auth-pass').value.trim();
+  if (!pass) { alert('Введите пароль'); return; }
+  const r = await fetch('/api/admin/stats', {headers: {'Authorization': 'Bearer ' + pass}});
   if (r.ok) {
+    TOKEN = pass;
     sessionStorage.setItem('at', TOKEN);
     document.getElementById('auth').style.display='none';
     document.getElementById('shell').style.display='grid';
     document.getElementById('mob-nav').style.display='block';
     loadDashboard();
   } else {
-    sessionStorage.removeItem('ap');
-    alert('Неверный пароль');
-    location.reload();
+    alert('Неверный пароль. Код: ' + r.status);
   }
 }
 login();
