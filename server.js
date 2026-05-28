@@ -346,7 +346,9 @@ const server = http.createServer(async (req, res) => {
   }
 
   // ── ADMIN API ─────────────────────────────────────────────────────────
-  const isAdmin = (req.headers['authorization']||'')=== `Bearer ${ADMIN_PASS}`;
+  const authHeader = req.headers['authorization']||'';
+const isAdmin = authHeader === `Bearer ${ADMIN_PASS}`;
+console.log('AUTH CHECK:', JSON.stringify(authHeader), '===', JSON.stringify(`Bearer ${ADMIN_PASS}`), '→', isAdmin);
 
   if (p==='/api/admin/stats' && m==='GET') {
     if (!isAdmin) return err(res,'Unauthorized',401);
