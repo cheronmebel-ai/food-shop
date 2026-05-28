@@ -157,11 +157,7 @@ const MIME = { '.html':'text/html; charset=utf-8','.js':'application/javascript'
 function serveFile(fp, res) {
   if (!fs.existsSync(fp)) { res.writeHead(404); res.end('Not found'); return; }
   const ext = path.extname(fp).toLowerCase();
-  res.writeHead(200, {
-    'Content-Type': MIME[ext]||'application/octet-stream',
-    'Cache-Control': ext==='.html'?'no-cache':'public,max-age=86400',
-    'Content-Security-Policy': "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:",
-  });
+  res.writeHead(200, { 'Content-Type':MIME[ext]||'application/octet-stream', 'Cache-Control': ext==='.html'?'no-cache':'public,max-age=86400' });
   fs.createReadStream(fp).pipe(res);
 }
 function readJSON(req) {
@@ -189,16 +185,11 @@ setInterval(keepalivePush, 60*60*1000);
 
 // ── SERVER ─────────────────────────────────────────────────────────────────
 const server = http.createServer(async (req, res) => {
-  console.log(req.method, req.url);
   const u = new URL(req.url, 'http://localhost');
   const p = u.pathname;
   const m = req.method.toUpperCase();
 
   if (m==='OPTIONS') { res.writeHead(204,{'Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'GET,POST,PUT,DELETE,OPTIONS','Access-Control-Allow-Headers':'Content-Type,Authorization'}); res.end(); return; }
-
-// Security headers
-res.setHeader('X-Content-Type-Options', 'nosniff');
-res.setHeader('X-Frame-Options', 'SAMEORIGIN');
 
   // ── AUTH API ──────────────────────────────────────────────────────────
   if (p==='/api/auth/register' && m==='POST') {
@@ -354,9 +345,7 @@ res.setHeader('X-Frame-Options', 'SAMEORIGIN');
   }
 
   // ── ADMIN API ─────────────────────────────────────────────────────────
-  const authHeader = req.headers['authorization']||'';
-const isAdmin = authHeader === `Bearer ${ADMIN_PASS}`;
-console.log('AUTH CHECK:', JSON.stringify(authHeader), '===', JSON.stringify(`Bearer ${ADMIN_PASS}`), '→', isAdmin);
+  const isAdmin = (req.headers['authorization']||'')=== `Bearer ${ADMIN_PASS}`;
 
   if (p==='/api/admin/stats' && m==='GET') {
     if (!isAdmin) return err(res,'Unauthorized',401);
@@ -519,8 +508,47 @@ console.log('AUTH CHECK:', JSON.stringify(authHeader), '===', JSON.stringify(`Be
 
   // ── STATIC ────────────────────────────────────────────────────────────
   if (p.startsWith('/uploads/')) return serveFile(path.join(__dirname,p), res);
-  if (p==='/admin'||p==='/admin/') return serveFile(path.join(__dirname,'admin','index.html'), res);
-  if (p.startsWith('/admin/'))     return serveFile(path.join(__dirname,'admin',p.slice(7)), res);
+
+  // Admin login page (no JS needed)
+  if (p==='/admin-login') {
+    if (m==='GET') {
+      const hasErr = u.searchParams.get('err');
+      res.writeHead(200,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-cache'});
+      res.end(`<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Вход — Админ</title><style>*{box-sizing:border-box;margin:0;padding:0}body{background:#f4f4f4;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:Arial,sans-serif}.box{background:#fff;border:2px solid #111;padding:40px;width:100%;max-width:360px}h2{font-size:22px;font-weight:700;margin-bottom:6px;font-family:Georgia,serif}p{font-size:13px;color:#555;margin-bottom:20px}label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#555;margin-bottom:5px;margin-top:12px}input{width:100%;border:1.5px solid #ddd;padding:10px 12px;font-size:14px;outline:none;margin-bottom:16px;border-radius:3px}input:focus{border-color:#111}button{width:100%;background:#111;color:#fff;border:none;padding:11px;font-size:14px;font-weight:600;cursor:pointer;border-radius:3px}.err{color:#c0392b;font-size:13px;margin-top:10px;padding:8px;background:#fef2f2;border:1px solid #fca5a5}</style></head><body><div class="box"><h2>Администратор</h2><p>Введите пароль для входа в панель</p><form method="POST" action="/admin-login"><label>Пароль</label><input type="password" name="pass" autofocus placeholder="Пароль"/><button type="submit">Войти →</button>${hasErr?'<div class="err">Неверный пароль</div>':''}</form></div></body></html>`);
+      return;
+    }
+    if (m==='POST') {
+      let body = '';
+      await new Promise(r=>{ req.on('data',c=>body+=c); req.on('end',r); });
+      const pass = decodeURIComponent((body.match(/pass=([^&]*)/)||[])[1]||'').replace(/\+/g,' ');
+      console.log('LOGIN ATTEMPT, pass match:', pass===ADMIN_PASS);
+      if (pass === ADMIN_PASS) {
+        const token = signToken({ admin:true, exp:Date.now()+8*60*60*1000 });
+        res.writeHead(302,{ 'Location':'/admin', 'Set-Cookie':`at=${token}; Path=/; HttpOnly; Max-Age=28800; SameSite=Lax` });
+        res.end(); return;
+      } else {
+        res.writeHead(302,{'Location':'/admin-login?err=1'}); res.end(); return;
+      }
+    }
+  }
+
+  // Check admin cookie
+  function getAdminCookie(req) {
+    const cookies = req.headers.cookie||'';
+    const cm = cookies.match(/at=([^;\s]+)/);
+    if (!cm) return false;
+    const payload = verifyToken(cm[1]);
+    return payload?.admin === true;
+  }
+
+  if (p==='/admin'||p==='/admin/') {
+    if (!getAdminCookie(req)) { res.writeHead(302,{'Location':'/admin-login'}); res.end(); return; }
+    return serveFile(path.join(__dirname,'admin','index.html'), res);
+  }
+  if (p.startsWith('/admin/')) {
+    return serveFile(path.join(__dirname,'admin',p.slice(7)), res);
+  }
+
   if (p==='/account'||p==='/account/') return serveFile(path.join(__dirname,'public','account.html'), res);
   serveFile(path.join(__dirname,'public', p==='/'?'index.html':p), res);
 });
