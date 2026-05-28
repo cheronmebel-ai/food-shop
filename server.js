@@ -185,6 +185,7 @@ setInterval(keepalivePush, 60*60*1000);
 
 // ── SERVER ─────────────────────────────────────────────────────────────────
 const server = http.createServer(async (req, res) => {
+  console.log(req.method, req.url);
   const u = new URL(req.url, 'http://localhost');
   const p = u.pathname;
   const m = req.method.toUpperCase();
