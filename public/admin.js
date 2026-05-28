@@ -1,26 +1,12 @@
 
-let TOKEN='', allOrders=[], editProdId=null, newImages=[], existImages=[], pushHist=[], allZones=[], currentOrderId=null, ordersFilter='';
+let TOKEN='cookie', allOrders=[], editProdId=null, newImages=[], existImages=[], pushHist=[], allZones=[], currentOrderId=null, ordersFilter='';
 
-// ── Auth ─────────────────────────────────────────────────────────────────
-async function login() {
-  const pass = document.getElementById('auth-pass').value.trim();
-  const r = await fetch('/api/admin/stats',{headers:{'Authorization':'Bearer '+pass}});
-  if (r.ok) {
-    TOKEN=pass; sessionStorage.setItem('at',TOKEN);
-    document.getElementById('auth').style.display='none';
-    document.getElementById('shell').style.display='grid';
-    document.getElementById('mob-nav').style.display='block';
-    loadDashboard();
-  } else { document.getElementById('auth-err').style.display=''; }
-}
-document.getElementById('btn-login').onclick=login;
-document.getElementById('auth-pass').onkeydown=e=>{ if(e.key==='Enter') login(); };
-TOKEN=sessionStorage.getItem('at')||'';
-if (TOKEN) { fetch('/api/admin/stats',{headers:{'Authorization':'Bearer '+TOKEN}}).then(r=>{ if(r.ok){document.getElementById('auth').style.display='none';document.getElementById('shell').style.display='grid';document.getElementById('mob-nav').style.display='block';loadDashboard();}else{TOKEN='';} }); }
-function logout() { sessionStorage.removeItem('at'); TOKEN=''; document.getElementById('auth').style.display='flex'; document.getElementById('shell').style.display='none'; document.getElementById('mob-nav').style.display='none'; }
+function logout() { document.cookie='at=; Path=/; Max-Age=0'; location.href='/admin-login'; }
+
+document.addEventListener('DOMContentLoaded', () => loadDashboard());
 
 // ── API ───────────────────────────────────────────────────────────────────
-const api = (p,o={}) => fetch(p,{...o,headers:{'Authorization':'Bearer '+TOKEN,...(o.headers||{})}});
+const api = (p,o={}) => fetch(p,{...o,credentials:'include',headers:{...o.headers}});
 
 // ── Nav ───────────────────────────────────────────────────────────────────
 function goPage(name,btn) {

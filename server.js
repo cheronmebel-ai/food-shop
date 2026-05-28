@@ -345,7 +345,12 @@ const server = http.createServer(async (req, res) => {
   }
 
   // ── ADMIN API ─────────────────────────────────────────────────────────
-  const isAdmin = (req.headers['authorization']||'')=== `Bearer ${ADMIN_PASS}`;
+  // Accept both Bearer token and cookie for admin
+  const authHeader = req.headers['authorization']||'';
+  const cookies2 = req.headers.cookie||'';
+  const cm2 = cookies2.match(/at=([^;\s]+)/);
+  const cookieAdmin = cm2 ? (verifyToken(cm2[1])?.admin===true) : false;
+  const isAdmin = authHeader === `Bearer ${ADMIN_PASS}` || cookieAdmin;
 
   if (p==='/api/admin/stats' && m==='GET') {
     if (!isAdmin) return err(res,'Unauthorized',401);
