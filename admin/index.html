@@ -396,55 +396,19 @@ let TOKEN='', allOrders=[], editProdId=null, newImages=[], existImages=[], pushH
 // ── Auth ─────────────────────────────────────────────────────────────────
 async function login() {
   const pass = document.getElementById('auth-pass').value.trim();
-  if (!pass) { alert('Введите пароль'); return; }
-  const r = await fetch('/api/admin/stats', {headers: {'Authorization': 'Bearer ' + pass}});
+  const r = await fetch('/api/admin/stats',{headers:{'Authorization':'Bearer '+pass}});
   if (r.ok) {
-    TOKEN = pass;
-    sessionStorage.setItem('at', TOKEN);
+    TOKEN=pass; sessionStorage.setItem('at',TOKEN);
     document.getElementById('auth').style.display='none';
     document.getElementById('shell').style.display='grid';
     document.getElementById('mob-nav').style.display='block';
     loadDashboard();
-  } else {
-    alert('Неверный пароль. Код: ' + r.status);
-  }
+  } else { document.getElementById('auth-err').style.display=''; }
 }
-login();
-document.getElementById('btn-login').onclick = async function() {
-  const pass = document.getElementById('auth-pass').value.trim();
-  if (!pass) { alert('Введите пароль'); return; }
-  try {
-    const r = await fetch('/api/admin/stats', { headers: { 'Authorization': 'Bearer ' + pass } });
-    if (r.ok) {
-      TOKEN = pass;
-      sessionStorage.setItem('at', TOKEN);
-      document.getElementById('auth').style.display = 'none';
-      document.getElementById('shell').style.display = 'grid';
-      document.getElementById('mob-nav').style.display = 'block';
-      loadDashboard();
-    } else {
-      alert('Неверный пароль. Статус: ' + r.status);
-    }
-  } catch(e) {
-    alert('Ошибка: ' + e.message);
-  }
-};
-
-document.getElementById('auth-pass').onkeydown = e => { if(e.key==='Enter') document.getElementById('btn-login').click(); };
-
-const savedToken = sessionStorage.getItem('at');
-if (savedToken) {
-  TOKEN = savedToken;
-  fetch('/api/admin/stats', { headers: { 'Authorization': 'Bearer ' + TOKEN } })
-    .then(r => {
-      if (r.ok) {
-        document.getElementById('auth').style.display = 'none';
-        document.getElementById('shell').style.display = 'grid';
-        document.getElementById('mob-nav').style.display = 'block';
-        loadDashboard();
-      } else { TOKEN = ''; sessionStorage.removeItem('at'); }
-    }).catch(() => { TOKEN = ''; });
-}
+document.getElementById('btn-login').onclick=login;
+document.getElementById('auth-pass').onkeydown=e=>{ if(e.key==='Enter') login(); };
+TOKEN=sessionStorage.getItem('at')||'';
+if (TOKEN) { fetch('/api/admin/stats',{headers:{'Authorization':'Bearer '+TOKEN}}).then(r=>{ if(r.ok){document.getElementById('auth').style.display='none';document.getElementById('shell').style.display='grid';document.getElementById('mob-nav').style.display='block';loadDashboard();}else{TOKEN='';} }); }
 function logout() { sessionStorage.removeItem('at'); TOKEN=''; document.getElementById('auth').style.display='flex'; document.getElementById('shell').style.display='none'; document.getElementById('mob-nav').style.display='none'; }
 
 // ── API ───────────────────────────────────────────────────────────────────
