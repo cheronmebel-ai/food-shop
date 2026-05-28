@@ -157,7 +157,11 @@ const MIME = { '.html':'text/html; charset=utf-8','.js':'application/javascript'
 function serveFile(fp, res) {
   if (!fs.existsSync(fp)) { res.writeHead(404); res.end('Not found'); return; }
   const ext = path.extname(fp).toLowerCase();
-  res.writeHead(200, { 'Content-Type':MIME[ext]||'application/octet-stream', 'Cache-Control': ext==='.html'?'no-cache':'public,max-age=86400' });
+  res.writeHead(200, {
+    'Content-Type': MIME[ext]||'application/octet-stream',
+    'Cache-Control': ext==='.html'?'no-cache':'public,max-age=86400',
+    'Content-Security-Policy': "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:",
+  });
   fs.createReadStream(fp).pipe(res);
 }
 function readJSON(req) {
@@ -191,6 +195,10 @@ const server = http.createServer(async (req, res) => {
   const m = req.method.toUpperCase();
 
   if (m==='OPTIONS') { res.writeHead(204,{'Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'GET,POST,PUT,DELETE,OPTIONS','Access-Control-Allow-Headers':'Content-Type,Authorization'}); res.end(); return; }
+
+// Security headers
+res.setHeader('X-Content-Type-Options', 'nosniff');
+res.setHeader('X-Frame-Options', 'SAMEORIGIN');
 
   // ── AUTH API ──────────────────────────────────────────────────────────
   if (p==='/api/auth/register' && m==='POST') {
