@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Личный кабинет</title>
+<link rel="manifest" href="/manifest.json"/>
+<meta name="theme-color" content="#111111"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<link rel="apple-touch-icon" href="/icon-192.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=PT+Serif:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--black:#111;--dark:#222;--gray:#555;--light-gray:#888;--border:#ddd;--bg:#fff;--bg2:#fafafa;--bg3:#f4f4f4;--red:#c0392b;--green:#27ae60;--font-serif:'Playfair Display',Georgia,serif;--font-body:'PT Serif',Georgia,serif;--font-ui:'Inter',Arial,sans-serif;--r:4px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--black);font-family:var(--font-ui);min-height:100vh}
+.header{background:var(--bg);border-bottom:2px solid var(--black);padding:14px 20px}
+.header-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{font-family:var(--font-serif);font-size:22px;font-weight:900;text-decoration:none;color:var(--black)}
+.btn{padding:9px 18px;border-radius:var(--r);font-family:var(--font-ui);font-weight:600;font-size:13px;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.btn:active{transform:scale(.98)}.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-black{background:var(--black);color:#fff}.btn-black:hover{background:#333}
+.btn-outline{background:#fff;border:1.5px solid var(--black);color:var(--black)}.btn-outline:hover{background:var(--black);color:#fff}
+.btn-red{background:var(--red);color:#fff}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-full{width:100%}
+.shell{max-width:900px;margin:0 auto;padding:32px 20px;display:grid;grid-template-columns:220px 1fr;gap:32px;align-items:start}
+@media(max-width:700px){.shell{grid-template-columns:1fr;padding:16px}.sidebar{display:none}.mob-tabs{display:flex!important}}
+.sidebar{border:1px solid var(--border)}
+.sidebar-user{padding:20px;border-bottom:1px solid var(--border);background:var(--bg3)}
+.sidebar-user h3{font-family:var(--font-serif);font-size:18px;font-weight:700;margin-bottom:4px}
+.sidebar-user p{font-size:12px;color:var(--gray)}
+.nav-item{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;cursor:pointer;font-size:14px;font-weight:500;color:var(--gray);border:none;background:none;width:100%;text-align:left;border-bottom:1px solid var(--border);transition:all .15s}
+.nav-item:last-child{border-bottom:none}
+.nav-item:hover{background:var(--bg3);color:var(--black)}
+.nav-item.active{background:var(--black);color:#fff}
+.nav-badge{background:var(--red);color:#fff;font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+.main-content{}
+.page{display:none}.page.active{display:block}
+.page-title{font-family:var(--font-serif);font-size:26px;font-weight:700;margin-bottom:4px}
+.page-sub{font-size:13px;color:var(--gray);margin-bottom:24px}
+.divider{border:none;border-top:2px solid var(--black);margin-bottom:24px}
+/* auth */
+.auth-card{border:1px solid var(--border);padding:32px;max-width:400px}
+.auth-card h2{font-family:var(--font-serif);font-size:22px;font-weight:700;margin-bottom:6px}
+.auth-card p{font-size:13px;color:var(--gray);margin-bottom:20px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--gray);margin-bottom:5px}
+.field input{width:100%;border:1.5px solid var(--border);padding:10px 12px;font-family:var(--font-body);font-size:14px;outline:none;transition:border-color .2s;border-radius:var(--r)}
+.field input:focus{border-color:var(--black)}
+.auth-switch{font-size:13px;color:var(--gray);margin-top:12px}
+.auth-switch a{color:var(--black);cursor:pointer;font-weight:600}
+.auth-err{font-size:13px;color:var(--red);margin-top:8px}
+/* orders */
+.orders-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.filter-btn{padding:5px 14px;border:1.5px solid var(--border);background:#fff;color:var(--gray);font-family:var(--font-ui);font-size:12px;font-weight:500;cursor:pointer;border-radius:100px;transition:all .15s}
+.filter-btn.active{background:var(--black);border-color:var(--black);color:#fff}
+.order-card{border:1px solid var(--border);margin-bottom:12px;cursor:pointer;transition:border-color .15s}
+.order-card:hover{border-color:var(--black)}
+.order-card-head{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;background:var(--bg3);border-bottom:1px solid var(--border)}
+.order-num{font-family:var(--font-ui);font-size:13px;font-weight:700;color:var(--black)}
+.order-date{font-size:12px;color:var(--gray)}
+.order-total{font-family:var(--font-ui);font-size:16px;font-weight:700}
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:2px;font-size:11px;font-weight:600;font-family:var(--font-ui);text-transform:uppercase;letter-spacing:.04em}
+.badge-new{background:#f8f4ff;color:#7c3aed;border:1px solid #c4b5fd}
+.badge-processing{background:#fffbeb;color:#b45309;border:1px solid #fcd34d}
+.badge-delivery{background:#eff6ff;color:#1d4ed8;border:1px solid #93c5fd}
+.badge-done{background:#f0fdf4;color:#166534;border:1px solid #86efac}
+.badge-cancelled{background:#fef2f2;color:#991b1b;border:1px solid #fca5a5}
+.order-card-body{padding:14px 16px}
+.order-items-preview{font-size:13px;color:var(--gray);margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.order-card-foot{display:flex;gap:8px;flex-wrap:wrap}
+/* notifications */
+.notif-item{padding:14px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start}
+.notif-item:last-child{border:none}
+.notif-dot{width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0;margin-top:5px}
+.notif-dot.read{background:var(--border)}
+.notif-content{flex:1}
+.notif-title{font-size:14px;font-weight:600;margin-bottom:3px}
+.notif-body{font-size:13px;color:var(--gray);line-height:1.5}
+.notif-date{font-size:11px;color:var(--light-gray);margin-top:4px}
+/* profile */
+.profile-form{max-width:460px}
+/* push */
+.push-card{border:1px solid var(--border);padding:24px;margin-bottom:20px}
+.push-card h3{font-family:var(--font-serif);font-size:18px;font-weight:700;margin-bottom:8px}
+.push-status-row{display:flex;align-items:center;gap:8px;font-size:13px;margin:12px 0}
+.pdot{width:8px;height:8px;border-radius:50%;background:var(--light-gray)}
+.pdot.ok{background:var(--green)}.pdot.err{background:var(--red)}
+/* mobile tabs */
+.mob-tabs{display:none;gap:0;overflow-x:auto;border:1px solid var(--border);margin-bottom:20px;scrollbar-width:none}
+.mob-tabs::-webkit-scrollbar{display:none}
+.mob-tab{padding:11px 16px;font-size:13px;font-weight:500;cursor:pointer;border:none;background:#fff;color:var(--gray);white-space:nowrap;border-right:1px solid var(--border);transition:all .15s}
+.mob-tab:last-child{border-right:none}
+.mob-tab.active{background:var(--black);color:#fff}
+/* modal */
+.order-modal{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s}
+.order-modal.open{opacity:1;pointer-events:all}
+.order-modal-box{background:#fff;border:1px solid var(--black);width:100%;max-width:500px;max-height:90vh;overflow-y:auto;padding:24px;position:relative}
+.order-modal-box h3{font-family:var(--font-serif);font-size:20px;font-weight:700;margin-bottom:16px}
+.order-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;font-size:13px}
+.detail-item span:first-child{color:var(--gray);display:block;margin-bottom:2px;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+.detail-item strong{font-size:14px}
+.order-items-list{border-top:1px solid var(--border)}
+.oi{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.oi:last-child{border-bottom:none;font-weight:700;padding-top:12px}
+.om-close{position:absolute;top:12px;right:12px;background:none;border:1px solid var(--border);width:28px;height:28px;cursor:pointer;font-size:14px}
+.empty-state{text-align:center;padding:48px 0;color:var(--light-gray)}
+.empty-state .icon{font-size:40px;margin-bottom:12px}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="header-inner">
+    <a class="logo" href="/">🍕 Доставка</a>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-outline btn-sm" onclick="location.href='/'">← Меню</button>
+      <button class="btn btn-outline btn-sm" id="btn-logout" style="display:none" onclick="logout()">Выйти</button>
+    </div>
+  </div>
+</header>
+
+<div class="shell" id="shell">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar" style="display:none">
+    <div class="sidebar-user">
+      <h3 id="sb-name">Загрузка…</h3>
+      <p id="sb-email"></p>
+    </div>
+    <button class="nav-item active" data-page="orders"    onclick="goPage('orders',this)">📦 Заказы <span class="nav-badge" id="nb-orders" style="display:none">0</span></button>
+    <button class="nav-item"        data-page="notifs"    onclick="goPage('notifs',this)">🔔 Уведомления <span class="nav-badge" id="nb-notifs" style="display:none">0</span></button>
+    <button class="nav-item"        data-page="push"      onclick="goPage('push',this)">📲 Push-подписка</button>
+    <button class="nav-item"        data-page="profile"   onclick="goPage('profile',this)">👤 Профиль</button>
+  </aside>
+
+  <!-- Main -->
+  <main id="main-content">
+
+    <!-- Mobile tabs -->
+    <div class="mob-tabs" id="mob-tabs" style="display:none">
+      <button class="mob-tab active" data-page="orders"  onclick="goPage('orders',this)">📦 Заказы</button>
+      <button class="mob-tab"        data-page="notifs"  onclick="goPage('notifs',this)">🔔 Уведомления</button>
+      <button class="mob-tab"        data-page="push"    onclick="goPage('push',this)">📲 Пуши</button>
+      <button class="mob-tab"        data-page="profile" onclick="goPage('profile',this)">👤 Профиль</button>
+    </div>
+
+    <!-- Auth page -->
+    <div class="page active" id="page-auth">
+      <div id="auth-login">
+        <div class="auth-card">
+          <h2>Войти в аккаунт</h2>
+          <p>Введите email и пароль</p>
+          <div class="field"><label>Email</label><input type="email" id="login-email" placeholder="you@example.com"/></div>
+          <div class="field"><label>Пароль</label><input type="password" id="login-pass" placeholder="••••••••"/></div>
+          <button class="btn btn-black btn-full" onclick="doLogin()">Войти</button>
+          <div class="auth-err" id="login-err" style="display:none"></div>
+          <div class="auth-switch">Нет аккаунта? <a onclick="showReg()">Зарегистрироваться</a></div>
+        </div>
+      </div>
+      <div id="auth-reg" style="display:none">
+        <div class="auth-card">
+          <h2>Регистрация</h2>
+          <p>Создайте аккаунт для отслеживания заказов</p>
+          <div class="field"><label>Имя</label><input type="text" id="reg-name" placeholder="Иван Иванов"/></div>
+          <div class="field"><label>Email</label><input type="email" id="reg-email" placeholder="you@example.com"/></div>
+          <div class="field"><label>Телефон</label><input type="tel" id="reg-phone" placeholder="+7 (___) ___-__-__"/></div>
+          <div class="field"><label>Пароль</label><input type="password" id="reg-pass" placeholder="Минимум 6 символов"/></div>
+          <button class="btn btn-black btn-full" onclick="doRegister()">Создать аккаунт</button>
+          <div class="auth-err" id="reg-err" style="display:none"></div>
+          <div class="auth-switch">Уже есть аккаунт? <a onclick="showLogin()">Войти</a></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Orders page -->
+    <div class="page" id="page-orders">
+      <div class="page-title">Мои заказы</div>
+      <div class="page-sub">История всех заказов</div>
+      <hr class="divider"/>
+      <div class="orders-filter">
+        <button class="filter-btn active" data-s="" onclick="filterOrders(this,'')">Все</button>
+        <button class="filter-btn" data-s="new" onclick="filterOrders(this,'new')">Новые</button>
+        <button class="filter-btn" data-s="processing" onclick="filterOrders(this,'processing')">Готовится</button>
+        <button class="filter-btn" data-s="delivery" onclick="filterOrders(this,'delivery')">В доставке</button>
+        <button class="filter-btn" data-s="done" onclick="filterOrders(this,'done')">Выполненные</button>
+      </div>
+      <div id="orders-list"></div>
+    </div>
+
+    <!-- Notifications page -->
+    <div class="page" id="page-notifs">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:4px">
+        <div class="page-title">Уведомления</div>
+        <button class="btn btn-outline btn-sm" onclick="markAllRead()">Прочитать все</button>
+      </div>
+      <div class="page-sub">Лента сообщений о заказах и акциях</div>
+      <hr class="divider"/>
+      <div id="notifs-list"></div>
+    </div>
+
+    <!-- Push page -->
+    <div class="page" id="page-push">
+      <div class="page-title">Push-уведомления</div>
+      <div class="page-sub">Управление подпиской на уведомления</div>
+      <hr class="divider"/>
+      <div class="push-card">
+        <h3>🔔 Подписка на уведомления</h3>
+        <p style="font-size:13px;color:var(--gray);line-height:1.6">Получайте уведомления об изменении статуса заказов, акциях и специальных предложениях прямо на телефон.</p>
+        <div class="push-status-row"><span class="pdot" id="pdot"></span><span id="push-status-lk">Проверка…</span></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn btn-black" id="btn-sub-lk">Подписаться</button>
+          <button class="btn btn-outline" id="btn-unsub-lk" style="display:none">Отписаться</button>
+        </div>
+        <p style="margin-top:14px;font-size:12px;color:var(--light-gray)">iOS Safari: Поделиться → На экран Домой → открыть с иконки → подписаться</p>
+      </div>
+      <div class="push-card" style="background:var(--bg3)">
+        <h3 style="font-size:16px">ℹ️ Как работают уведомления</h3>
+        <ul style="font-size:13px;color:var(--gray);line-height:2;padding-left:16px">
+          <li>Об изменении статуса вашего заказа</li>
+          <li>О новых акциях и скидках</li>
+          <li>О специальных предложениях</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Profile page -->
+    <div class="page" id="page-profile">
+      <div class="page-title">Профиль</div>
+      <div class="page-sub">Ваши личные данные</div>
+      <hr class="divider"/>
+      <div class="profile-form">
+        <div class="field"><label>Имя</label><input type="text" id="pf-name" placeholder="Ваше имя"/></div>
+        <div class="field"><label>Телефон</label><input type="tel" id="pf-phone" placeholder="+7 (___) ___-__-__"/></div>
+        <div class="field"><label>Email</label><input type="email" id="pf-email" disabled style="background:var(--bg3);color:var(--gray)"/></div>
+        <div class="field"><label>Новый пароль (оставьте пустым чтобы не менять)</label><input type="password" id="pf-pass" placeholder="Новый пароль"/></div>
+        <button class="btn btn-black" onclick="saveProfile()">Сохранить</button>
+        <div id="profile-msg" style="margin-top:10px;font-size:13px"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Order modal -->
+<div class="order-modal" id="order-modal" onclick="closeOrderModal(event)">
+  <div class="order-modal-box">
+    <button class="om-close" onclick="closeOMBtn()">✕</button>
+    <h3>Заказ <span id="om-num"></span></h3>
+    <div class="order-detail-grid">
+      <div class="detail-item"><span>Дата</span><strong id="om-date"></strong></div>
+      <div class="detail-item"><span>Статус</span><span id="om-status"></span></div>
+      <div class="detail-item"><span>Адрес</span><strong id="om-addr"></strong></div>
+      <div class="detail-item"><span>Оплата</span><strong id="om-pay"></strong></div>
+    </div>
+    <div class="order-items-list" id="om-items"></div>
+    <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-outline btn-sm" onclick="closeOMBtn()">Закрыть</button>
+      <button class="btn btn-black btn-sm" onclick="repeatOrder()">Повторить заказ</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let TOKEN = localStorage.getItem('auth_token')||'';
+let USER  = null;
+let allOrders = [], allNotifs = [];
+let currentOrder = null;
+let swReg2 = null;
+
+async function init() {
+  if (TOKEN) {
+    try {
+      const r = await fetch('/api/user/profile', { headers:{'Authorization':'Bearer '+TOKEN} });
+      if (r.ok) {
+        USER = await r.json();
+        showLoggedIn();
+        return;
+      }
+    } catch {}
+    TOKEN=''; localStorage.removeItem('auth_token');
+  }
+  // Show auth
+  document.getElementById('page-auth').classList.add('active');
+}
+
+function showLoggedIn() {
+  document.getElementById('page-auth').classList.remove('active');
+  document.getElementById('sidebar').style.display = 'block';
+  document.getElementById('mob-tabs').style.display = 'flex';
+  document.getElementById('btn-logout').style.display = '';
+  document.getElementById('sb-name').textContent  = USER.name;
+  document.getElementById('sb-email').textContent = USER.email;
+  document.getElementById('pf-name').value  = USER.name||'';
+  document.getElementById('pf-phone').value = USER.phone||'';
+  document.getElementById('pf-email').value = USER.email||'';
+  localStorage.setItem('user_name', USER.name);
+  goPage('orders', document.querySelector('[data-page="orders"]'));
+  initPushLK();
+}
+
+// ── Navigation ─────────────────────────────────────────────────────────────
+function goPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.nav-item,.mob-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll(`[data-page="${name}"]`).forEach(b=>b.classList.add('active'));
+  if (name==='orders')  loadOrders();
+  if (name==='notifs')  loadNotifs();
+  if (name==='profile') {};
+}
+
+// ── Auth ───────────────────────────────────────────────────────────────────
+function showReg()   { document.getElementById('auth-login').style.display='none'; document.getElementById('auth-reg').style.display=''; }
+function showLogin() { document.getElementById('auth-reg').style.display='none'; document.getElementById('auth-login').style.display=''; }
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  const r = await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});
+  const d = await r.json();
+  if (!r.ok) { document.getElementById('login-err').textContent=d.error||'Ошибка'; document.getElementById('login-err').style.display=''; return; }
+  TOKEN=d.token; USER=d.user; localStorage.setItem('auth_token',TOKEN);
+  document.getElementById('login-err').style.display='none';
+  showLoggedIn();
+}
+document.getElementById('login-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+
+async function doRegister() {
+  const name  = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const phone = document.getElementById('reg-phone').value.trim();
+  const pass  = document.getElementById('reg-pass').value;
+  if (!name||!email||!pass) { document.getElementById('reg-err').textContent='Заполните все поля'; document.getElementById('reg-err').style.display=''; return; }
+  const r = await fetch('/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,phone,password:pass})});
+  const d = await r.json();
+  if (!r.ok) { document.getElementById('reg-err').textContent=d.error||'Ошибка'; document.getElementById('reg-err').style.display=''; return; }
+  TOKEN=d.token; USER=d.user; localStorage.setItem('auth_token',TOKEN);
+  document.getElementById('reg-err').style.display='none';
+  showLoggedIn();
+}
+
+function logout() {
+  TOKEN=''; USER=null; localStorage.removeItem('auth_token'); localStorage.removeItem('user_name');
+  location.reload();
+}
+
+// ── Orders ─────────────────────────────────────────────────────────────────
+let ordersFilter = '';
+async function loadOrders() {
+  const r = await fetch('/api/user/orders',{headers:{'Authorization':'Bearer '+TOKEN}});
+  allOrders = await r.json();
+  const newCount = allOrders.filter(o=>o.status==='new'||o.status==='processing'||o.status==='delivery').length;
+  const nb = document.getElementById('nb-orders');
+  nb.textContent = newCount; nb.style.display = newCount>0?'flex':'none';
+  renderOrders();
+}
+
+function filterOrders(btn, s) {
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); ordersFilter=s; renderOrders();
+}
+
+function renderOrders() {
+  const list = document.getElementById('orders-list');
+  let orders = ordersFilter ? allOrders.filter(o=>o.status===ordersFilter) : allOrders;
+  if (!orders.length) { list.innerHTML='<div class="empty-state"><div class="icon">📭</div><p>Заказов нет</p></div>'; return; }
+  list.innerHTML = orders.map(o=>`
+    <div class="order-card" onclick="openOrder(${o.id})">
+      <div class="order-card-head">
+        <div>
+          <div class="order-num">${esc(o.number)}</div>
+          <div class="order-date">${fmtDate(o.created_at)}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          ${statusBadge(o.status)}
+          <span class="order-total">${Number(o.total).toLocaleString('ru')} ₽</span>
+        </div>
+      </div>
+      <div class="order-card-body">
+        <div class="order-items-preview">${(o.items||[]).map(i=>i.name+' ×'+i.qty).join(', ')}</div>
+        <div class="order-card-foot">
+          <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openOrder(${o.id})">Подробнее</button>
+          <button class="btn btn-black btn-sm" onclick="event.stopPropagation();repeatOrder2(${o.id})">Повторить</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function openOrder(id) {
+  const o = allOrders.find(x=>x.id===id); if (!o) return;
+  currentOrder = o;
+  document.getElementById('om-num').textContent    = o.number;
+  document.getElementById('om-date').textContent   = fmtDate(o.created_at);
+  document.getElementById('om-status').innerHTML   = statusBadge(o.status);
+  document.getElementById('om-addr').textContent   = o.address||'Самовывоз';
+  document.getElementById('om-pay').textContent    = o.payment==='online'?'Онлайн':'Наличные';
+  const items = o.items||[];
+  document.getElementById('om-items').innerHTML = [...items.map(i=>`<div class="oi"><span>${esc(i.name)} × ${i.qty}</span><span>${Number(i.price*i.qty).toLocaleString('ru')} ₽</span></div>`), `<div class="oi"><span>Доставка</span><span>${Number(o.delivery_price||0).toLocaleString('ru')} ₽</span></div>`, `<div class="oi"><span>Итого</span><span>${Number(o.total).toLocaleString('ru')} ₽</span></div>`].join('');
+  document.getElementById('order-modal').classList.add('open');
+}
+function closeOrderModal(e) { if(e.target===document.getElementById('order-modal')) closeOMBtn(); }
+function closeOMBtn() { document.getElementById('order-modal').classList.remove('open'); }
+function repeatOrder() { if(currentOrder) addOrderToCart(currentOrder); closeOMBtn(); }
+function repeatOrder2(id) { const o=allOrders.find(x=>x.id===id); if(o) addOrderToCart(o); }
+function addOrderToCart(o) {
+  const cart = (o.items||[]).map(i=>({id:i.id,name:i.name,price:i.price,image:i.image||'',weight:i.weight||'',qty:i.qty}));
+  localStorage.setItem('cart',JSON.stringify(cart));
+  alert(`Товары добавлены в корзину (${cart.length} позиций). Перейдите на главную страницу для оформления.`);
+  location.href='/';
+}
+
+// ── Notifications ──────────────────────────────────────────────────────────
+async function loadNotifs() {
+  const r = await fetch('/api/user/notifications',{headers:{'Authorization':'Bearer '+TOKEN}});
+  allNotifs = await r.json();
+  const unread = allNotifs.filter(n=>!n.read).length;
+  const nb = document.getElementById('nb-notifs');
+  nb.textContent=unread; nb.style.display=unread>0?'flex':'none';
+  const list = document.getElementById('notifs-list');
+  if (!allNotifs.length) { list.innerHTML='<div class="empty-state"><div class="icon">🔔</div><p>Уведомлений пока нет</p></div>'; return; }
+  list.innerHTML = allNotifs.map(n=>`
+    <div class="notif-item">
+      <span class="notif-dot ${n.read?'read':''}"></span>
+      <div class="notif-content">
+        <div class="notif-title">${esc(n.title)}</div>
+        <div class="notif-body">${esc(n.body)}</div>
+        <div class="notif-date">${fmtDate(n.created_at)}</div>
+      </div>
+    </div>`).join('');
+}
+
+async function markAllRead() {
+  await fetch('/api/user/notifications/read',{method:'POST',headers:{'Authorization':'Bearer '+TOKEN}});
+  loadNotifs();
+}
+
+// ── Push LK ────────────────────────────────────────────────────────────────
+function setPushLK(text, ok=null) {
+  document.getElementById('push-status-lk').textContent=text;
+  const dot=document.getElementById('pdot');
+  dot.className='pdot'+(ok===true?' ok':ok===false?' err':'');
+}
+
+async function initPushLK() {
+  if (!('serviceWorker' in navigator)) { setPushLK('Браузер не поддерживается',false); return; }
+  swReg2 = await navigator.serviceWorker.register('/sw.js');
+  await navigator.serviceWorker.ready;
+  if (!('PushManager' in window)) { setPushLK('Установите на рабочий стол (iOS)',false); return; }
+  const sub = await swReg2.pushManager.getSubscription();
+  if (sub) { setPushLK('Подписка активна ✓',true); document.getElementById('btn-sub-lk').style.display='none'; document.getElementById('btn-unsub-lk').style.display=''; }
+  else setPushLK('Не подписаны');
+}
+
+async function subscribeLK() {
+  if (!swReg2) return;
+  const perm = await Notification.requestPermission();
+  if (perm!=='granted') { setPushLK('Разрешение отклонено',false); return; }
+  try {
+    const {publicKey} = await (await fetch('/api/vapid-public-key')).json();
+    const sub = await swReg2.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64(publicKey)});
+    await fetch('/api/subscribe',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+TOKEN},body:JSON.stringify({subscription:sub,userAgent:navigator.userAgent})});
+    setPushLK('Подписка активна ✓',true);
+    document.getElementById('btn-sub-lk').style.display='none';
+    document.getElementById('btn-unsub-lk').style.display='';
+  } catch(e) { setPushLK('Ошибка: '+e.message,false); }
+}
+
+async function unsubscribeLK() {
+  const sub = await swReg2?.pushManager.getSubscription();
+  if (sub) { await fetch('/api/subscribe',{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({endpoint:sub.endpoint})}); await sub.unsubscribe(); }
+  setPushLK('Отписались'); document.getElementById('btn-sub-lk').style.display=''; document.getElementById('btn-unsub-lk').style.display='none';
+}
+
+document.getElementById('btn-sub-lk').onclick   = subscribeLK;
+document.getElementById('btn-unsub-lk').onclick = unsubscribeLK;
+
+// ── Profile ────────────────────────────────────────────────────────────────
+async function saveProfile() {
+  const body = { name:document.getElementById('pf-name').value, phone:document.getElementById('pf-phone').value };
+  const pass = document.getElementById('pf-pass').value;
+  if (pass) body.password = pass;
+  const r = await fetch('/api/user/profile',{method:'PUT',headers:{'Content-Type':'application/json','Authorization':'Bearer '+TOKEN},body:JSON.stringify(body)});
+  const msg = document.getElementById('profile-msg');
+  if (r.ok) { msg.textContent='✓ Сохранено'; msg.style.color='var(--green)'; USER.name=body.name; localStorage.setItem('user_name',body.name); }
+  else { msg.textContent='Ошибка сохранения'; msg.style.color='var(--red)'; }
+  setTimeout(()=>msg.textContent='',3000);
+}
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+function statusBadge(s) {
+  const m = {new:'badge-new',processing:'badge-processing',delivery:'badge-delivery',done:'badge-done',cancelled:'badge-cancelled'};
+  const l = {new:'Новый',processing:'Готовится',delivery:'В доставке',done:'Выполнен',cancelled:'Отменён'};
+  return `<span class="badge ${m[s]||'badge-new'}">${l[s]||s}</span>`;
+}
+function fmtDate(iso) { if(!iso) return '—'; return new Date(iso).toLocaleString('ru',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}); }
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function b64(s) { const p='='.repeat((4-s.length%4)%4); const b=(s+p).replace(/-/g,'+').replace(/_/g,'/'); return Uint8Array.from(atob(b),c=>c.charCodeAt(0)); }
+
+// Handle hash navigation
+if (location.hash==='#orders')  setTimeout(()=>goPage('orders',document.querySelector('[data-page="orders"]')),300);
+if (location.hash==='#notifications') setTimeout(()=>goPage('notifs',document.querySelector('[data-page="notifs"]')),300);
+
+init();
+</script>
+</body>
+</html>

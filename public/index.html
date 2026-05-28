@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title id="page-title">Вкусная доставка</title>
+<link rel="manifest" href="/manifest.json"/>
+<meta name="theme-color" content="#111111"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="Доставка"/>
+<link rel="apple-touch-icon" href="/icon-192.png"/>
+<link id="favicon" rel="icon" href="/icon-192.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=PT+Serif:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --black:#111;--dark:#222;--gray:#555;--light-gray:#888;--border:#ddd;--bg:#fff;--bg2:#fafafa;--bg3:#f4f4f4;
+  --accent:#111;--red:#c0392b;--green:#27ae60;
+  --font-serif:'Playfair Display',Georgia,serif;
+  --font-body:'PT Serif',Georgia,serif;
+  --font-ui:'Inter',Arial,sans-serif;
+  --r:4px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--black);font-family:var(--font-body);line-height:1.6}
+
+/* ── HEADER ── */
+.header{background:var(--bg);border-bottom:2px solid var(--black);position:sticky;top:0;z-index:100}
+.header-top{background:var(--black);color:#fff;text-align:center;padding:6px 20px;font-family:var(--font-ui);font-size:12px;letter-spacing:.08em}
+.header-main{max-width:1200px;margin:0 auto;padding:12px 20px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px}
+.header-left{display:flex;align-items:center;gap:16px}
+.header-phone{font-family:var(--font-ui);font-weight:600;font-size:15px;color:var(--black);text-decoration:none;display:flex;align-items:center;gap:6px}
+.header-phone:hover{color:var(--red)}
+.logo-wrap{text-align:center}
+.logo{font-family:var(--font-serif);font-size:clamp(20px,4vw,30px);font-weight:900;letter-spacing:-.02em;text-decoration:none;color:var(--black);display:block;line-height:1}
+.logo img{max-height:50px;max-width:160px;object-fit:contain}
+.logo-sub{font-family:var(--font-ui);font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--light-gray);margin-top:2px}
+.header-right{display:flex;align-items:center;gap:12px;justify-content:flex-end}
+.header-btn{background:none;border:1.5px solid var(--border);border-radius:var(--r);padding:7px 14px;font-family:var(--font-ui);font-size:13px;font-weight:500;cursor:pointer;color:var(--black);display:flex;align-items:center;gap:6px;transition:all .2s;text-decoration:none;white-space:nowrap}
+.header-btn:hover{background:var(--black);color:#fff;border-color:var(--black)}
+.cart-btn{background:var(--black);color:#fff;border-color:var(--black)}
+.cart-btn:hover{background:#333}
+.cart-badge{background:var(--red);color:#fff;font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+.cart-badge.hidden{display:none}
+
+/* ── NAV ── */
+.nav-bar{border-bottom:1px solid var(--border);background:var(--bg)}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.nav-inner::-webkit-scrollbar{display:none}
+.nav-link{font-family:var(--font-ui);font-size:13px;font-weight:500;color:var(--gray);text-decoration:none;padding:11px 16px;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s}
+.nav-link:hover,.nav-link.active{color:var(--black);border-bottom-color:var(--black)}
+
+/* ── HERO ── */
+.hero{background:var(--bg3);border-bottom:1px solid var(--border);padding:40px 20px;text-align:center}
+.hero-inner{max-width:700px;margin:0 auto}
+.hero h1{font-family:var(--font-serif);font-size:clamp(32px,6vw,56px);font-weight:900;letter-spacing:-.02em;line-height:1.1;margin-bottom:12px}
+.hero p{font-size:16px;color:var(--gray);margin-bottom:24px}
+.hero-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* ── BUTTONS ── */
+.btn{padding:11px 24px;border-radius:var(--r);font-family:var(--font-ui);font-weight:600;font-size:14px;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.btn:active{transform:scale(.98)}.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-black{background:var(--black);color:#fff}.btn-black:hover{background:#333}
+.btn-outline{background:#fff;border:1.5px solid var(--black);color:var(--black)}.btn-outline:hover{background:var(--black);color:#fff}
+.btn-red{background:var(--red);color:#fff}.btn-red:hover{background:#a93226}
+.btn-green{background:var(--green);color:#fff}.btn-green:hover{background:#229954}
+.btn-sm{padding:7px 14px;font-size:12px}
+.btn-full{width:100%}
+
+/* ── SECTION ── */
+.section{padding:48px 20px}
+.section-inner{max-width:1200px;margin:0 auto}
+.section-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:8px}
+.section-title{font-family:var(--font-serif);font-size:clamp(22px,4vw,32px);font-weight:700;letter-spacing:-.01em}
+.section-divider{border:none;border-top:2px solid var(--black);margin:12px 0 28px}
+
+/* ── CATEGORIES ── */
+.cats{display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-bottom:28px;padding-bottom:4px}
+.cats::-webkit-scrollbar{display:none}
+.cat-btn{padding:7px 18px;border-radius:100px;font-family:var(--font-ui);font-size:13px;font-weight:500;cursor:pointer;border:1.5px solid var(--border);background:#fff;color:var(--gray);white-space:nowrap;transition:all .2s}
+.cat-btn:hover,.cat-btn.active{background:var(--black);border-color:var(--black);color:#fff}
+
+/* ── PRODUCT GRID ── */
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1px;background:var(--border);border:1px solid var(--border)}
+.product-card{background:var(--bg);cursor:pointer;transition:background .15s;display:flex;flex-direction:column}
+.product-card:hover{background:var(--bg2)}
+.product-img{width:100%;aspect-ratio:4/3;background:var(--bg3);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:48px;position:relative}
+.product-img img{width:100%;height:100%;object-fit:cover;transition:transform .3s}
+.product-card:hover .product-img img{transform:scale(1.03)}
+.product-tags{position:absolute;top:8px;left:8px;display:flex;gap:4px;flex-wrap:wrap}
+.tag{font-family:var(--font-ui);font-size:10px;font-weight:700;padding:2px 7px;border-radius:2px;text-transform:uppercase;letter-spacing:.05em}
+.tag-hit{background:var(--black);color:#fff}
+.tag-new{background:var(--green);color:#fff}
+.tag-hot{background:var(--red);color:#fff}
+.tag-veg{background:#27ae60;color:#fff}
+.product-body{padding:14px;flex:1;display:flex;flex-direction:column;gap:6px}
+.product-cat{font-family:var(--font-ui);font-size:10px;color:var(--light-gray);text-transform:uppercase;letter-spacing:.06em}
+.product-name{font-family:var(--font-serif);font-size:16px;font-weight:700;line-height:1.3}
+.product-desc{font-size:13px;color:var(--gray);line-height:1.4;flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.product-weight{font-family:var(--font-ui);font-size:11px;color:var(--light-gray)}
+.product-footer{display:flex;align-items:center;justify-content:space-between;padding:0 14px 14px;gap:8px}
+.product-price{display:flex;flex-direction:column}
+.price-cur{font-family:var(--font-ui);font-size:18px;font-weight:700}
+.price-old{font-family:var(--font-ui);font-size:12px;color:var(--light-gray);text-decoration:line-through}
+.add-btn{width:36px;height:36px;border-radius:var(--r);background:var(--black);border:none;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.add-btn:hover{background:#333}
+.add-btn.in-cart{background:var(--green);font-size:14px}
+
+/* ── PRODUCT MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:#fff;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;border:1px solid var(--black);position:relative}
+.modal-img{width:100%;aspect-ratio:16/9;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:80px;overflow:hidden}
+.modal-img img{width:100%;height:100%;object-fit:cover}
+.modal-body{padding:24px}
+.modal-cat{font-family:var(--font-ui);font-size:11px;color:var(--light-gray);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.modal-name{font-family:var(--font-serif);font-size:26px;font-weight:700;margin-bottom:8px;line-height:1.2}
+.modal-desc{font-size:14px;color:var(--gray);margin-bottom:16px;line-height:1.6}
+.modal-section-title{font-family:var(--font-ui);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--light-gray);margin-bottom:8px;border-top:1px solid var(--border);padding-top:14px}
+.modal-composition{font-size:13px;color:var(--gray);line-height:1.6;margin-bottom:14px}
+.nutrition-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:16px}
+.nutrition-item{background:#fff;padding:10px;text-align:center}
+.nutrition-val{font-family:var(--font-ui);font-size:18px;font-weight:700;display:block}
+.nutrition-lbl{font-family:var(--font-ui);font-size:10px;color:var(--light-gray);text-transform:uppercase;letter-spacing:.04em}
+.modal-footer{display:flex;align-items:center;gap:12px;margin-top:16px;flex-wrap:wrap}
+.modal-prices{display:flex;align-items:baseline;gap:10px}
+.modal-price{font-family:var(--font-ui);font-size:26px;font-weight:700}
+.modal-old-price{font-size:15px;color:var(--light-gray);text-decoration:line-through}
+.modal-weight{font-family:var(--font-ui);font-size:13px;color:var(--light-gray);margin-left:auto}
+.qty-ctrl{display:flex;align-items:center;border:1.5px solid var(--black)}
+.qty-btn{width:34px;height:36px;background:#fff;border:none;font-size:18px;cursor:pointer;transition:background .15s}
+.qty-btn:hover{background:var(--bg3)}
+.qty-val{width:36px;text-align:center;font-family:var(--font-ui);font-weight:700;font-size:15px;line-height:36px}
+.modal-close{position:absolute;top:12px;right:12px;background:#fff;border:1px solid var(--border);width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;z-index:1}
+
+/* ── CART DRAWER ── */
+.drawer-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:300;opacity:0;pointer-events:none;transition:opacity .25s}
+.drawer-bg.open{opacity:1;pointer-events:all}
+.drawer{position:fixed;right:0;top:0;bottom:0;width:100%;max-width:400px;background:#fff;border-left:1px solid var(--black);z-index:301;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1)}
+.drawer.open{transform:none}
+.drawer-head{padding:16px 20px;border-bottom:2px solid var(--black);display:flex;align-items:center;justify-content:space-between}
+.drawer-title{font-family:var(--font-serif);font-size:20px;font-weight:700}
+.drawer-close-btn{background:none;border:none;font-size:20px;cursor:pointer;padding:4px}
+.drawer-body{flex:1;overflow-y:auto;padding:0}
+.cart-empty-state{text-align:center;padding:60px 20px;color:var(--light-gray)}
+.cart-empty-state .icon{font-size:48px;margin-bottom:12px}
+.cart-item{display:flex;gap:12px;padding:14px 20px;border-bottom:1px solid var(--border)}
+.cart-item-img{width:56px;height:56px;background:var(--bg3);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;border:1px solid var(--border)}
+.cart-item-img img{width:100%;height:100%;object-fit:cover}
+.cart-item-info{flex:1;min-width:0}
+.cart-item-name{font-family:var(--font-serif);font-size:14px;font-weight:700;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cart-item-price{font-family:var(--font-ui);font-size:12px;color:var(--gray)}
+.cart-item-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.cart-item-total{font-family:var(--font-ui);font-size:15px;font-weight:700}
+.cart-item-del{background:none;border:none;color:var(--light-gray);cursor:pointer;font-size:16px}
+.cart-item-del:hover{color:var(--red)}
+.drawer-foot{padding:16px 20px;border-top:2px solid var(--black)}
+.cart-total-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+.cart-total-label{font-family:var(--font-ui);font-size:14px;color:var(--gray)}
+.cart-total-val{font-family:var(--font-serif);font-size:24px;font-weight:700}
+.cart-delivery-info{font-family:var(--font-ui);font-size:12px;color:var(--gray);margin-bottom:14px;padding:8px;background:var(--bg3);border-left:3px solid var(--black)}
+
+/* ── ORDER FORM ── */
+.order-form{display:none;margin-top:14px}
+.order-form.visible{display:block}
+.form-title{font-family:var(--font-serif);font-size:16px;font-weight:700;margin-bottom:14px;padding-top:14px;border-top:1px solid var(--border)}
+.field{margin-bottom:12px}
+.field label{display:block;font-family:var(--font-ui);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--gray);margin-bottom:5px}
+.field input,.field textarea,.field select{width:100%;border:1.5px solid var(--border);border-radius:var(--r);padding:9px 12px;font-family:var(--font-body);font-size:14px;outline:none;transition:border-color .2s;background:#fff}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--black)}
+.field select option{font-family:var(--font-ui)}
+.pay-options{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pay-option{border:1.5px solid var(--border);border-radius:var(--r);padding:10px;cursor:pointer;text-align:center;transition:all .2s;font-family:var(--font-ui);font-size:13px;font-weight:500;position:relative}
+.pay-option input{position:absolute;opacity:0;pointer-events:none}
+.pay-option.selected,.pay-option:has(input:checked){border-color:var(--black);background:var(--black);color:#fff}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* ── ORDER SUCCESS ── */
+.order-success{display:none;text-align:center;padding:24px 0}
+.order-success.visible{display:block}
+.order-success .big-icon{font-size:56px;margin-bottom:12px}
+.order-success h3{font-family:var(--font-serif);font-size:22px;font-weight:700;margin-bottom:8px}
+.order-success .order-num{font-family:var(--font-ui);font-size:14px;font-weight:700;background:var(--bg3);border:1px solid var(--border);padding:6px 14px;display:inline-block;margin:10px 0}
+
+/* ── DELIVERY ZONES ── */
+.zones-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:24px}
+.zone-card{background:#fff;padding:20px}
+.zone-name{font-family:var(--font-serif);font-size:16px;font-weight:700;margin-bottom:10px}
+.zone-row{display:flex;justify-content:space-between;font-family:var(--font-ui);font-size:13px;padding:4px 0;border-bottom:1px solid var(--bg3)}
+.zone-row:last-child{border:none}
+.zone-key{color:var(--gray)}
+.zone-val{font-weight:600}
+
+/* ── CONTACTS ── */
+.contacts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--border);border:1px solid var(--border)}
+.contact-card{background:#fff;padding:24px}
+.contact-icon{font-size:24px;margin-bottom:10px}
+.contact-label{font-family:var(--font-ui);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--light-gray);margin-bottom:6px}
+.contact-value{font-family:var(--font-serif);font-size:15px;font-weight:600}
+.contact-value a{color:var(--black);text-decoration:none}
+.contact-value a:hover{color:var(--red)}
+
+/* ── PUSH SECTION ── */
+.push-section{background:var(--bg3);border:1px solid var(--border);padding:32px;display:flex;gap:32px;align-items:center;flex-wrap:wrap}
+.push-text{flex:1;min-width:200px}
+.push-text h3{font-family:var(--font-serif);font-size:22px;font-weight:700;margin-bottom:8px}
+.push-text p{font-size:14px;color:var(--gray);line-height:1.6}
+.push-status{margin-top:10px;font-family:var(--font-ui);font-size:13px;display:flex;align-items:center;gap:6px}
+.push-dot{width:8px;height:8px;border-radius:50%;background:var(--light-gray);flex-shrink:0}
+.push-dot.ok{background:var(--green)}
+.push-dot.err{background:var(--red)}
+.push-actions{display:flex;flex-direction:column;gap:8px;flex-shrink:0}
+
+/* ── FOOTER ── */
+.footer{background:var(--black);color:#fff;padding:32px 20px;margin-top:0}
+.footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:24px}
+.footer-brand .logo{color:#fff;font-size:22px}
+.footer-brand p{font-size:13px;color:#aaa;margin-top:8px}
+.footer-col h4{font-family:var(--font-ui);font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#aaa;margin-bottom:12px}
+.footer-col a{display:block;font-family:var(--font-ui);font-size:13px;color:#ccc;text-decoration:none;margin-bottom:6px}
+.footer-col a:hover{color:#fff}
+.footer-bottom{max-width:1200px;margin:24px auto 0;padding-top:16px;border-top:1px solid #333;text-align:center;font-family:var(--font-ui);font-size:12px;color:#666}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--black);color:#fff;padding:12px 20px;font-family:var(--font-ui);font-size:14px;font-weight:500;z-index:500;border:1px solid var(--black);white-space:nowrap;transition:transform .3s}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ── SKELETON ── */
+.skeleton{background:linear-gradient(90deg,var(--bg3) 25%,var(--border) 50%,var(--bg3) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:2px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+@media(max-width:768px){
+  .header-main{grid-template-columns:auto 1fr;padding:10px 16px}
+  .header-left{display:none}
+  .logo-wrap{text-align:left}
+  .hero{padding:28px 16px}
+  .section{padding:32px 16px}
+  .modal-footer{flex-direction:column;align-items:stretch}
+  .qty-ctrl{align-self:flex-start}
+  .push-section{flex-direction:column}
+  .form-row{grid-template-columns:1fr}
+  .drawer{max-width:100%}
+}
+@media(max-width:480px){
+  .products-grid{grid-template-columns:repeat(2,1fr)}
+  .header-btn.account-btn{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-top" id="header-top">Доставка за 45 минут · Бесплатно от 1500 ₽</div>
+  <div class="header-main">
+    <div class="header-left">
+      <a class="header-phone" href="tel:+79001234567" id="header-phone">📞 +7 (900) 123-45-67</a>
+    </div>
+    <div class="logo-wrap">
+      <a class="logo" href="/" id="logo-link">
+        <img id="logo-img" src="" alt="" style="display:none"/>
+        <span id="logo-text">Вкусная доставка</span>
+      </a>
+      <div class="logo-sub">Доставка еды</div>
+    </div>
+    <div class="header-right">
+      <a class="header-btn account-btn" href="/account" id="account-btn">👤 <span id="account-label">Войти</span></a>
+      <button class="header-btn cart-btn" onclick="toggleCart()">
+        🛒 Корзина
+        <span class="cart-badge hidden" id="cart-badge">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Nav -->
+<nav class="nav-bar">
+  <div class="nav-inner">
+    <a class="nav-link active" href="#catalog">Меню</a>
+    <a class="nav-link" href="#delivery">Доставка</a>
+    <a class="nav-link" href="#contacts">Контакты</a>
+    <a class="nav-link" href="#notifications">Уведомления</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-inner">
+    <h1>Еда с доставкой<br>до вашей двери</h1>
+    <p>Пицца, роллы, бургеры и многое другое. Горячо, быстро, вкусно.</p>
+    <div class="hero-btns">
+      <a href="#catalog" class="btn btn-black">Смотреть меню</a>
+      <a href="#delivery" class="btn btn-outline">Зоны доставки</a>
+    </div>
+  </div>
+</div>
+
+<!-- Catalog -->
+<section class="section" id="catalog">
+  <div class="section-inner">
+    <div class="section-head">
+      <h2 class="section-title">Меню</h2>
+    </div>
+    <hr class="section-divider"/>
+    <div class="cats" id="cats">
+      <button class="cat-btn active" data-cat="" onclick="filterCat(this,'')">Все позиции</button>
+    </div>
+    <div class="products-grid" id="products-grid">
+      <div style="padding:40px;text-align:center;grid-column:1/-1" class="skeleton" style="height:200px"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Delivery Zones -->
+<section class="section" id="delivery" style="background:var(--bg3);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="section-inner">
+    <div class="section-head"><h2 class="section-title">Зоны доставки</h2></div>
+    <hr class="section-divider"/>
+    <div class="zones-grid" id="zones-grid">
+      <div class="zone-card"><div class="skeleton" style="height:80px"></div></div>
+    </div>
+    <p style="font-family:var(--font-ui);font-size:13px;color:var(--gray)">
+      🚗 <strong>Самовывоз</strong> — бесплатно, скидка 5% на заказ
+    </p>
+  </div>
+</section>
+
+<!-- Contacts -->
+<section class="section" id="contacts">
+  <div class="section-inner">
+    <div class="section-head"><h2 class="section-title">Контакты</h2></div>
+    <hr class="section-divider"/>
+    <div class="contacts-grid" id="contacts-grid">
+      <div class="contact-card"><div class="contact-icon">📞</div><div class="contact-label">Телефон</div><div class="contact-value"><a href="tel:+79001234567" id="c-phone">+7 (900) 123-45-67</a></div></div>
+      <div class="contact-card"><div class="contact-icon">💬</div><div class="contact-label">WhatsApp / Telegram</div><div class="contact-value"><a href="#" id="c-wa" target="_blank">WhatsApp</a> · <a href="#" id="c-tg" target="_blank">Telegram</a></div></div>
+      <div class="contact-card"><div class="contact-icon">📍</div><div class="contact-label">Адрес</div><div class="contact-value" id="c-addr">ул. Пушкина, 1</div></div>
+      <div class="contact-card"><div class="contact-icon">🕐</div><div class="contact-label">Время работы</div><div class="contact-value" id="c-hours">10:00 – 22:00</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- Push Notifications -->
+<section class="section" id="notifications" style="background:var(--bg3);border-top:1px solid var(--border)">
+  <div class="section-inner">
+    <div class="section-head"><h2 class="section-title">Уведомления</h2></div>
+    <hr class="section-divider"/>
+    <div class="push-section">
+      <div class="push-text">
+        <h3>🔔 Подпишитесь на акции</h3>
+        <p>Узнавайте первыми о скидках, новинках и специальных предложениях. Установите приложение на рабочий стол и подпишитесь на уведомления.</p>
+        <div class="push-status">
+          <span class="push-dot" id="push-dot"></span>
+          <span id="push-status-text">Проверка…</span>
+        </div>
+        <p style="margin-top:10px;font-family:var(--font-ui);font-size:11px;color:var(--light-gray)">
+          iOS: Safari → Поделиться → На экран Домой → открыть с иконки
+        </p>
+      </div>
+      <div class="push-actions">
+        <button class="btn btn-black" id="btn-push-sub">Подписаться</button>
+        <button class="btn btn-outline" id="btn-push-unsub" style="display:none">Отписаться</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo" id="footer-logo">Вкусная доставка</div>
+      <p>Горячая еда с доставкой</p>
+    </div>
+    <div class="footer-col">
+      <h4>Меню</h4>
+      <a href="#catalog">Каталог</a>
+      <a href="#delivery">Доставка</a>
+      <a href="#contacts">Контакты</a>
+    </div>
+    <div class="footer-col">
+      <h4>Аккаунт</h4>
+      <a href="/account">Личный кабинет</a>
+      <a href="/account#orders">Мои заказы</a>
+      <a href="/account#notifications">Уведомления</a>
+    </div>
+    <div class="footer-col">
+      <h4>Контакты</h4>
+      <a href="tel:+79001234567" id="f-phone">+7 (900) 123-45-67</a>
+      <a href="#" id="f-wa">WhatsApp</a>
+      <a href="#" id="f-tg">Telegram</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2024 Вкусная доставка · <a href="/admin" style="color:#666">Администратор</a></div>
+</footer>
+
+<!-- Product Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-img" id="modal-img">🍕</div>
+    <div class="modal-body">
+      <div class="modal-cat" id="modal-cat"></div>
+      <div class="modal-name" id="modal-name"></div>
+      <div class="modal-desc" id="modal-desc"></div>
+      <div class="modal-section-title">Состав</div>
+      <div class="modal-composition" id="modal-composition"></div>
+      <div class="modal-section-title">Пищевая ценность на 100г</div>
+      <div class="nutrition-grid">
+        <div class="nutrition-item"><span class="nutrition-val" id="n-cal">—</span><span class="nutrition-lbl">Ккал</span></div>
+        <div class="nutrition-item"><span class="nutrition-val" id="n-prot">—</span><span class="nutrition-lbl">Белки</span></div>
+        <div class="nutrition-item"><span class="nutrition-val" id="n-fat">—</span><span class="nutrition-lbl">Жиры</span></div>
+        <div class="nutrition-item"><span class="nutrition-val" id="n-carb">—</span><span class="nutrition-lbl">Углев.</span></div>
+      </div>
+      <div class="modal-footer">
+        <div class="modal-prices">
+          <span class="modal-price" id="modal-price"></span>
+          <span class="modal-old-price" id="modal-old-price"></span>
+        </div>
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="chQty(-1)">−</button>
+          <span class="qty-val" id="modal-qty">1</span>
+          <button class="qty-btn" onclick="chQty(1)">+</button>
+        </div>
+        <button class="btn btn-black" id="modal-add-btn" onclick="addFromModal()" style="flex:1">В корзину</button>
+        <span class="modal-weight" id="modal-weight"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cart Drawer -->
+<div class="drawer-bg" id="drawer-bg" onclick="toggleCart()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <span class="drawer-title">Корзина</span>
+    <button class="drawer-close-btn" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="drawer-body" id="drawer-body">
+    <div class="cart-empty-state"><div class="icon">🍽</div><p>Корзина пуста</p></div>
+  </div>
+  <div class="drawer-foot" id="drawer-foot" style="display:none">
+    <div class="cart-delivery-info" id="cart-delivery-info"></div>
+    <div class="cart-total-row">
+      <span class="cart-total-label">Итого к оплате:</span>
+      <span class="cart-total-val" id="cart-total-val">0 ₽</span>
+    </div>
+
+    <div id="order-form-wrap">
+      <button class="btn btn-green btn-full" onclick="showOrderForm()">Оформить заказ →</button>
+      <div class="order-form" id="order-form">
+        <div class="form-title">Данные для доставки</div>
+        <div class="form-row">
+          <div class="field"><label>Имя *</label><input id="o-name" type="text" placeholder="Ваше имя"/></div>
+          <div class="field"><label>Телефон *</label><input id="o-phone" type="tel" placeholder="+7 (___) ___-__-__"/></div>
+        </div>
+        <div class="field"><label>Зона доставки</label>
+          <select id="o-zone" onchange="updateDeliveryPrice()">
+            <option value="">Самовывоз (бесплатно)</option>
+          </select>
+        </div>
+        <div class="field" id="address-field"><label>Адрес доставки</label><input id="o-address" type="text" placeholder="Улица, дом, квартира"/></div>
+        <div class="field"><label>Комментарий</label><textarea id="o-comment" rows="2" placeholder="Пожелания к заказу…"></textarea></div>
+        <div class="field"><label>Способ оплаты</label>
+          <div class="pay-options">
+            <label class="pay-option selected" onclick="selectPay(this,'online')"><input type="radio" name="pay" value="online" checked/> 💳 Онлайн</label>
+            <label class="pay-option" onclick="selectPay(this,'cash')"><input type="radio" name="pay" value="cash"/> 💵 Наличными</label>
+          </div>
+        </div>
+        <div id="online-pay-note" style="font-family:var(--font-ui);font-size:12px;color:var(--gray);margin-bottom:12px;padding:8px;background:var(--bg3)">
+          💳 Онлайн-оплата: после подтверждения заказа мы пришлём ссылку для оплаты через Альфа-Банк
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline btn-sm" onclick="hideOrderForm()">← Назад</button>
+          <button class="btn btn-green" style="flex:1" id="btn-place-order" onclick="placeOrder()">✓ Подтвердить</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="order-success" id="order-success">
+      <div class="big-icon">🎉</div>
+      <h3>Заказ принят!</h3>
+      <div class="order-num" id="success-num"></div>
+      <p style="font-size:14px;color:var(--gray)">Мы свяжемся с вами для подтверждения. Следите за статусом в личном кабинете.</p>
+      <button class="btn btn-outline btn-sm" style="margin-top:16px" onclick="afterOrder()">Продолжить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+let products = [], cart = JSON.parse(localStorage.getItem('cart')||'[]');
+let currentProduct = null, modalQty = 1, swReg = null;
+let deliveryZones = [], selectedPayment = 'online', deliveryPrice = 0;
+
+// ── Init ───────────────────────────────────────────────────────────────────
+async function init() {
+  await loadSettings();
+  await loadCategories();
+  await loadProducts();
+  await loadDeliveryZones();
+  updateCartBadge();
+  initPush();
+  updateAccountBtn();
+}
+
+// ── Settings ───────────────────────────────────────────────────────────────
+async function loadSettings() {
+  try {
+    const r = await fetch('/api/settings');
+    const s = await r.json();
+    // Logo
+    if (s.logo_url) {
+      document.getElementById('logo-img').src = s.logo_url;
+      document.getElementById('logo-img').style.display = 'block';
+      document.getElementById('logo-text').style.display = 'none';
+    }
+    if (s.favicon_url) {
+      document.getElementById('favicon').href = s.favicon_url;
+    }
+    if (s.shop_name) {
+      document.title = s.shop_name;
+      document.getElementById('page-title').textContent = s.shop_name;
+      document.getElementById('footer-logo').textContent = s.shop_name;
+      document.querySelector('meta[name="apple-mobile-web-app-title"]').content = s.shop_name;
+    }
+    if (s.phone) {
+      document.getElementById('header-phone').textContent = '📞 '+s.phone;
+      document.getElementById('header-phone').href = 'tel:'+s.phone.replace(/\D/g,'');
+      document.getElementById('c-phone').textContent = s.phone;
+      document.getElementById('c-phone').href = 'tel:'+s.phone.replace(/\D/g,'');
+      document.getElementById('f-phone').textContent = s.phone;
+    }
+    if (s.whatsapp) { document.getElementById('c-wa').href = 'https://wa.me/'+s.whatsapp; document.getElementById('f-wa').href = 'https://wa.me/'+s.whatsapp; }
+    if (s.telegram) { document.getElementById('c-tg').href = 'https://t.me/'+s.telegram; document.getElementById('f-tg').href = 'https://t.me/'+s.telegram; }
+    if (s.address) document.getElementById('c-addr').textContent = s.address;
+    if (s.working_hours) document.getElementById('c-hours').textContent = s.working_hours;
+    if (s.free_delivery_from) document.getElementById('header-top').textContent = `Доставка за 45 минут · Бесплатно от ${Number(s.free_delivery_from).toLocaleString('ru')} ₽`;
+  } catch {}
+}
+
+// ── Products ───────────────────────────────────────────────────────────────
+async function loadCategories() {
+  try {
+    const r = await fetch('/api/categories');
+    const cats = await r.json();
+    const wrap = document.getElementById('cats');
+    cats.forEach(c => {
+      const btn = document.createElement('button');
+      btn.className = 'cat-btn'; btn.dataset.cat = c; btn.textContent = c;
+      btn.onclick = () => filterCat(btn, c);
+      wrap.appendChild(btn);
+    });
+  } catch {}
+}
+
+async function loadProducts(cat='') {
+  try {
+    const r = await fetch(cat ? `/api/products?category=${encodeURIComponent(cat)}` : '/api/products');
+    products = await r.json();
+    renderProducts();
+  } catch { document.getElementById('products-grid').innerHTML = '<p style="grid-column:1/-1;padding:40px;text-align:center;color:var(--gray)">Не удалось загрузить меню</p>'; }
+}
+
+function filterCat(btn, cat) {
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  loadProducts(cat);
+}
+
+function renderProducts() {
+  const g = document.getElementById('products-grid');
+  if (!products.length) { g.innerHTML='<p style="grid-column:1/-1;padding:40px;text-align:center;color:var(--gray)">Позиций нет</p>'; return; }
+  g.innerHTML = products.map(p => {
+    const img = p.images?.[0] ? `<img src="${p.images[0]}" alt="${esc(p.name)}" loading="lazy"/>` : '🍕';
+    const tags = (p.tags||[]).map(t => `<span class="tag tag-${tagClass(t)}">${esc(t)}</span>`).join('');
+    const inCart = cart.some(i=>i.id===p.id);
+    return `
+    <div class="product-card" onclick="openModal(${p.id})">
+      <div class="product-img">${img}<div class="product-tags">${tags}</div></div>
+      <div class="product-body">
+        <div class="product-cat">${esc(p.category)}</div>
+        <div class="product-name">${esc(p.name)}</div>
+        <div class="product-desc">${esc(p.description)}</div>
+        <div class="product-weight">${esc(p.weight||'')}</div>
+      </div>
+      <div class="product-footer">
+        <div class="product-price">
+          <span class="price-cur">${fmt(p.price)}</span>
+          ${p.old_price?`<span class="price-old">${fmt(p.old_price)}</span>`:''}
+        </div>
+        <button class="add-btn ${inCart?'in-cart':''}" onclick="event.stopPropagation();quickAdd(${p.id})">${inCart?'✓':'+'}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function tagClass(t) { if(t==='Хит') return 'hit'; if(t==='Новинка') return 'new'; if(t==='Острое') return 'hot'; if(t==='Вегетарианское') return 'veg'; return 'hit'; }
+
+// ── Modal ──────────────────────────────────────────────────────────────────
+function openModal(id) {
+  const p = products.find(x=>x.id===id); if (!p) return;
+  currentProduct = p; modalQty = 1;
+  document.getElementById('modal-qty').textContent = 1;
+  document.getElementById('modal-cat').textContent  = p.category||'';
+  document.getElementById('modal-name').textContent = p.name||'';
+  document.getElementById('modal-desc').textContent = p.description||'';
+  document.getElementById('modal-composition').textContent = p.composition||'—';
+  document.getElementById('modal-price').textContent = fmt(p.price);
+  document.getElementById('modal-old-price').textContent = p.old_price ? fmt(p.old_price) : '';
+  document.getElementById('modal-weight').textContent = p.weight||'';
+  const n = p.nutrition||{};
+  document.getElementById('n-cal').textContent  = n.cal||'—';
+  document.getElementById('n-prot').textContent = n.prot||'—';
+  document.getElementById('n-fat').textContent  = n.fat||'—';
+  document.getElementById('n-carb').textContent = n.carb||'—';
+  const imgEl = document.getElementById('modal-img');
+  imgEl.innerHTML = p.images?.[0] ? `<img src="${p.images[0]}" alt="${esc(p.name)}"/>` : '🍕';
+  const inCart = cart.some(i=>i.id===p.id);
+  document.getElementById('modal-add-btn').textContent = inCart ? '✓ В корзине' : 'В корзину';
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  history.pushState({product:id},'',' ');
+}
+function closeModalOutside(e) { if(e.target===document.getElementById('modal-overlay')) closeModal(); }
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); document.body.style.overflow = ''; history.back(); }
+window.addEventListener('popstate', () => document.getElementById('modal-overlay').classList.remove('open'));
+function chQty(d) { modalQty=Math.max(1,modalQty+d); document.getElementById('modal-qty').textContent=modalQty; }
+function addFromModal() {
+  if (!currentProduct) return;
+  addToCart(currentProduct, modalQty);
+  document.getElementById('modal-add-btn').textContent = '✓ В корзине';
+  closeModal();
+  toast(`«${currentProduct.name}» добавлен`);
+}
+function quickAdd(id) {
+  const p = products.find(x=>x.id===id); if (!p) return;
+  addToCart(p,1); toast(`«${p.name}» добавлен`);
+}
+
+// ── Cart ───────────────────────────────────────────────────────────────────
+function addToCart(p, qty=1) {
+  const ex = cart.find(i=>i.id===p.id);
+  if (ex) ex.qty+=qty; else cart.push({id:p.id,name:p.name,price:p.price,image:p.images?.[0]||'',weight:p.weight||'',qty});
+  saveCart(); renderProducts();
+}
+function removeFromCart(id) { cart=cart.filter(i=>i.id!==id); saveCart(); renderCart(); renderProducts(); }
+function saveCart() { localStorage.setItem('cart',JSON.stringify(cart)); updateCartBadge(); }
+function updateCartBadge() { const t=cart.reduce((s,i)=>s+i.qty,0); const el=document.getElementById('cart-badge'); el.textContent=t; el.classList.toggle('hidden',t===0); }
+
+function toggleCart() {
+  const open = document.getElementById('drawer').classList.toggle('open');
+  document.getElementById('drawer-bg').classList.toggle('open',open);
+  document.body.style.overflow = open?'hidden':'';
+  if (open) renderCart();
+}
+
+function renderCart() {
+  const body = document.getElementById('drawer-body');
+  const foot = document.getElementById('drawer-foot');
+  if (!cart.length) { body.innerHTML='<div class="cart-empty-state"><div class="icon">🍽</div><p>Корзина пуста</p></div>'; foot.style.display='none'; return; }
+  foot.style.display = 'block';
+  const subtotal = cart.reduce((s,i)=>s+(i.price*i.qty),0);
+  const total    = subtotal + deliveryPrice;
+  document.getElementById('cart-total-val').textContent = fmt(total);
+  const settings = JSON.parse(localStorage.getItem('shop_settings')||'{}');
+  const freeFrom = settings.free_delivery_from||1500;
+  const minOrder = settings.min_order||500;
+  let info = '';
+  if (subtotal < minOrder) info = `Минимальный заказ: ${fmt(minOrder)}`;
+  else if (deliveryPrice > 0 && subtotal < freeFrom) info = `До бесплатной доставки: ${fmt(freeFrom-subtotal)}`;
+  else if (deliveryPrice === 0 && subtotal >= freeFrom) info = '✓ Бесплатная доставка';
+  document.getElementById('cart-delivery-info').textContent = info;
+  document.getElementById('cart-delivery-info').style.display = info ? 'block' : 'none';
+  body.innerHTML = cart.map(i=>`
+    <div class="cart-item">
+      <div class="cart-item-img">${i.image?`<img src="${i.image}" alt=""/>`:'🍕'}</div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${esc(i.name)}</div>
+        <div class="cart-item-price">${fmt(i.price)} × ${i.qty} ${esc(i.weight)}</div>
+      </div>
+      <div class="cart-item-right">
+        <span class="cart-item-total">${fmt(i.price*i.qty)}</span>
+        <button class="cart-item-del" onclick="removeFromCart(${i.id})">🗑</button>
+      </div>
+    </div>`).join('');
+}
+
+// ── Delivery zones ─────────────────────────────────────────────────────────
+async function loadDeliveryZones() {
+  try {
+    const r = await fetch('/api/delivery-zones');
+    deliveryZones = await r.json();
+    renderZones();
+    renderZoneSelect();
+  } catch {}
+}
+
+function renderZones() {
+  const g = document.getElementById('zones-grid');
+  if (!deliveryZones.length) { g.innerHTML='<p style="padding:20px;color:var(--gray)">Нет данных о зонах</p>'; return; }
+  g.innerHTML = deliveryZones.map(z=>`
+    <div class="zone-card">
+      <div class="zone-name">${esc(z.name)}</div>
+      <div class="zone-row"><span class="zone-key">Доставка</span><span class="zone-val">${z.price===0?'Бесплатно':fmt(z.price)}</span></div>
+      <div class="zone-row"><span class="zone-key">Мин. заказ</span><span class="zone-val">${fmt(z.min_order)}</span></div>
+      <div class="zone-row"><span class="zone-key">Время</span><span class="zone-val">${esc(z.time)}</span></div>
+    </div>`).join('');
+}
+
+function renderZoneSelect() {
+  const sel = document.getElementById('o-zone');
+  deliveryZones.forEach(z => {
+    const opt = document.createElement('option');
+    opt.value = z.id; opt.textContent = `${z.name} — ${z.price===0?'бесплатно':fmt(z.price)} (от ${fmt(z.min_order)})`;
+    sel.appendChild(opt);
+  });
+}
+
+function updateDeliveryPrice() {
+  const zoneId = parseInt(document.getElementById('o-zone').value);
+  const zone   = deliveryZones.find(z=>z.id===zoneId);
+  deliveryPrice = zone ? zone.price : 0;
+  const af = document.getElementById('address-field');
+  af.style.display = zoneId ? 'block' : 'none';
+  renderCart();
+}
+
+// ── Order ──────────────────────────────────────────────────────────────────
+function showOrderForm() { document.getElementById('order-form').classList.add('visible'); document.querySelector('#order-form-wrap>.btn-green').style.display='none'; }
+function hideOrderForm() { document.getElementById('order-form').classList.remove('visible'); document.querySelector('#order-form-wrap>.btn-green').style.display=''; }
+function selectPay(el, val) { document.querySelectorAll('.pay-option').forEach(x=>x.classList.remove('selected')); el.classList.add('selected'); selectedPayment=val; document.getElementById('online-pay-note').style.display=val==='online'?'block':'none'; }
+
+async function placeOrder() {
+  const name  = document.getElementById('o-name').value.trim();
+  const phone = document.getElementById('o-phone').value.trim();
+  if (!name)  { toast('Введите имя','err'); return; }
+  if (!phone) { toast('Введите телефон','err'); return; }
+  const subtotal = cart.reduce((s,i)=>s+(i.price*i.qty),0);
+  const btn = document.getElementById('btn-place-order');
+  btn.disabled=true; btn.textContent='Отправляем…';
+  try {
+    const token = localStorage.getItem('auth_token');
+    const r = await fetch('/api/orders', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', ...(token?{'Authorization':'Bearer '+token}:{}) },
+      body: JSON.stringify({ name, phone, address:document.getElementById('o-address').value, zone:document.getElementById('o-zone').options[document.getElementById('o-zone').selectedIndex]?.text||'', comment:document.getElementById('o-comment').value, items:cart, delivery_price:deliveryPrice, payment:selectedPayment })
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error||'Ошибка');
+    document.getElementById('success-num').textContent = d.number;
+    document.getElementById('order-success').classList.add('visible');
+    document.getElementById('order-form-wrap').style.display='none';
+    document.querySelector('.cart-total-row').style.display='none';
+    document.getElementById('cart-delivery-info').style.display='none';
+  } catch(e) { toast(e.message,'err'); }
+  btn.disabled=false; btn.textContent='✓ Подтвердить';
+}
+
+function afterOrder() {
+  cart=[]; saveCart(); toggleCart();
+  document.getElementById('order-success').classList.remove('visible');
+  document.getElementById('order-form-wrap').style.display='';
+  document.querySelector('.cart-total-row').style.display='';
+  document.getElementById('order-form').classList.remove('visible');
+  document.querySelector('#order-form-wrap>.btn-green').style.display='';
+  ['o-name','o-phone','o-address','o-comment'].forEach(id=>document.getElementById(id).value='');
+  renderProducts();
+}
+
+// ── Push ───────────────────────────────────────────────────────────────────
+function setPushStatus(text, ok=null) {
+  document.getElementById('push-status-text').textContent = text;
+  const dot = document.getElementById('push-dot');
+  dot.className = 'push-dot'+(ok===true?' ok':ok===false?' err':'');
+}
+
+async function initPush() {
+  if (!('serviceWorker' in navigator)) { setPushStatus('Браузер не поддерживается',false); return; }
+  swReg = await navigator.serviceWorker.register('/sw.js');
+  await navigator.serviceWorker.ready;
+  if (!('PushManager' in window)) { setPushStatus('Установите на рабочий стол для уведомлений',false); return; }
+  const sub = await swReg.pushManager.getSubscription();
+  if (sub) { setPushStatus('Вы подписаны ✓',true); document.getElementById('btn-push-sub').style.display='none'; document.getElementById('btn-push-unsub').style.display=''; resetUnread(); }
+  else setPushStatus('Не подписаны');
+}
+
+async function subscribePush() {
+  if (!swReg) return;
+  const perm = await Notification.requestPermission();
+  if (perm!=='granted') { setPushStatus('Разрешение отклонено',false); return; }
+  try {
+    const {publicKey} = await (await fetch('/api/vapid-public-key')).json();
+    const sub = await swReg.pushManager.subscribe({ userVisibleOnly:true, applicationServerKey:b64(publicKey) });
+    const token = localStorage.getItem('auth_token');
+    await fetch('/api/subscribe',{ method:'POST', headers:{'Content-Type':'application/json',...(token?{'Authorization':'Bearer '+token}:{})}, body:JSON.stringify({subscription:sub,userAgent:navigator.userAgent}) });
+    setPushStatus('Вы подписаны ✓',true);
+    document.getElementById('btn-push-sub').style.display='none';
+    document.getElementById('btn-push-unsub').style.display='';
+    toast('Вы подписались на уведомления 🔔');
+  } catch(e) { setPushStatus('Ошибка: '+e.message,false); }
+}
+
+async function unsubscribePush() {
+  if (!swReg) return;
+  const sub = await swReg.pushManager.getSubscription();
+  if (sub) { await fetch('/api/subscribe',{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({endpoint:sub.endpoint})}); await sub.unsubscribe(); }
+  setPushStatus('Отписались');
+  document.getElementById('btn-push-sub').style.display='';
+  document.getElementById('btn-push-unsub').style.display='none';
+}
+
+async function resetUnread() {
+  if (!swReg) return;
+  const sub = await swReg.pushManager.getSubscription().catch(()=>null);
+  if (!sub) return;
+  fetch('/api/read',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({endpoint:sub.endpoint})}).catch(()=>{});
+}
+navigator.serviceWorker?.addEventListener('message', e=>{ if(e.data?.type==='RESET_UNREAD') resetUnread(); });
+window.addEventListener('focus', resetUnread);
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) resetUnread(); });
+
+document.getElementById('btn-push-sub').onclick   = subscribePush;
+document.getElementById('btn-push-unsub').onclick = unsubscribePush;
+
+// ── Auth ───────────────────────────────────────────────────────────────────
+function updateAccountBtn() {
+  const token = localStorage.getItem('auth_token');
+  const name  = localStorage.getItem('user_name');
+  if (token && name) document.getElementById('account-label').textContent = name.split(' ')[0];
+}
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+function fmt(n) { return Number(n).toLocaleString('ru')+' ₽'; }
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function b64(s) { const p='='.repeat((4-s.length%4)%4); const b=(s+p).replace(/-/g,'+').replace(/_/g,'/'); return Uint8Array.from(atob(b),c=>c.charCodeAt(0)); }
+function toast(msg,type='ok') {
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.className='toast show'+(type==='err'?' err':'');
+  clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove('show'),3000);
+}
+
+init();
+</script>
+</body>
+</html>
