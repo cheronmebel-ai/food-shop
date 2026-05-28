@@ -515,6 +515,14 @@ const server = http.createServer(async (req, res) => {
 });
 
 loadVapid();
+
+// Startup diagnostics
+console.log('__dirname:', __dirname);
+console.log('public exists:', fs.existsSync(path.join(__dirname,'public')));
+console.log('index.html exists:', fs.existsSync(path.join(__dirname,'public','index.html')));
+console.log('admin exists:', fs.existsSync(path.join(__dirname,'admin')));
+console.log('Files in __dirname:', fs.readdirSync(__dirname).join(', '));
+
 server.listen(PORT, () => {
   console.log(`\n🍕 Food Shop PWA → http://localhost:${PORT}`);
   console.log(`   Admin  → http://localhost:${PORT}/admin  (pass: ${ADMIN_PASS})\n`);
