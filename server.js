@@ -157,9 +157,10 @@ const MIME = { '.html':'text/html; charset=utf-8','.js':'application/javascript'
 function serveFile(fp, res) {
   if (!fs.existsSync(fp)) { res.writeHead(404); res.end('Not found'); return; }
   const ext = path.extname(fp).toLowerCase();
-  res.writeHead(200, { 'Content-Type':MIME[ext]||'application/octet-stream', 'Cache-Control': ext==='.html'?'no-cache':'public,max-age=86400' });
-  fs.createReadStream(fp).pipe(res);
-}
+  res.writeHead(200, {
+  'Content-Type': MIME[ext]||'application/octet-stream',
+  'Cache-Control': ext==='.html'?'no-cache':'public,max-age=86400',
+});
 function readJSON(req) {
   return new Promise((res,rej)=>{ let d=''; req.on('data',c=>d+=c); req.on('end',()=>{ try{res(JSON.parse(d));}catch{res({});} }); req.on('error',rej); });
 }
