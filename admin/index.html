@@ -1,4 +1,11 @@
 <!DOCTYPE html>
+<script>
+(function(){
+  var p = sessionStorage.getItem('ap');
+  if(!p){ p = prompt('Пароль администратора:'); if(!p){location.href='/';return;} sessionStorage.setItem('ap',p); }
+  window._ADMIN_PASS = p;
+})();
+</script>
 <html lang="ru">
 <head>
 <meta charset="UTF-8"/>
@@ -395,16 +402,21 @@ let TOKEN='', allOrders=[], editProdId=null, newImages=[], existImages=[], pushH
 
 // ── Auth ─────────────────────────────────────────────────────────────────
 async function login() {
-  const pass = document.getElementById('auth-pass').value.trim();
-  const r = await fetch('/api/admin/stats',{headers:{'Authorization':'Bearer '+pass}});
+  TOKEN = window._ADMIN_PASS || sessionStorage.getItem('ap') || '';
+  const r = await fetch('/api/admin/stats',{headers:{'Authorization':'Bearer '+TOKEN}});
   if (r.ok) {
-    TOKEN=pass; sessionStorage.setItem('at',TOKEN);
+    sessionStorage.setItem('at', TOKEN);
     document.getElementById('auth').style.display='none';
     document.getElementById('shell').style.display='grid';
     document.getElementById('mob-nav').style.display='block';
     loadDashboard();
-  } else { document.getElementById('auth-err').style.display=''; }
+  } else {
+    sessionStorage.removeItem('ap');
+    alert('Неверный пароль');
+    location.reload();
+  }
 }
+login();
 document.getElementById('btn-login').onclick = async function() {
   const pass = document.getElementById('auth-pass').value.trim();
   if (!pass) { alert('Введите пароль'); return; }
