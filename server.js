@@ -542,9 +542,12 @@ const server = http.createServer(async (req, res) => {
     const t = u.searchParams.get('t');
     const payload = t ? verifyToken(t) : null;
     if (!payload?.admin) { res.writeHead(302,{'Location':'/admin-login'}); res.end(); return; }
-    // Pass token to page via meta tag
-    const html = require('fs').readFileSync(require('path').join(__dirname,'admin','index.html'),'utf8');
-    const injected = html.replace('</head>', `<meta name="admin-token" content="${t}"></head>`);
+    // Inject token and admin.js inline
+    const adminHtml = fs.readFileSync(path.join(__dirname,'admin','index.html'),'utf8');
+    const adminJs  = fs.readFileSync(path.join(__dirname,'static','admin.js'),'utf8');
+    const injected = adminHtml
+      .replace('<script src="/static/admin.js" defer></script>', '')
+      .replace('</body>', `<script>\nconst metaToken="${t}";\nlet TOKEN=metaToken;\nif(metaToken)sessionStorage.setItem('admin_token',metaToken);\n${adminJs}\n</script>\n</body>`);
     res.writeHead(200,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-cache'});
     res.end(injected); return;
   }
