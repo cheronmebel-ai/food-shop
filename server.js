@@ -530,7 +530,7 @@ const server = http.createServer(async (req, res) => {
       console.log('LOGIN ATTEMPT, pass match:', pass===ADMIN_PASS);
       if (pass === ADMIN_PASS) {
         const token = signToken({ admin:true, exp:Date.now()+8*60*60*1000 });
-        res.writeHead(302,{ 'Location':'/admin', 'Set-Cookie':`at=${token}; Path=/; HttpOnly; Max-Age=28800; SameSite=Lax; Secure` });
+        res.writeHead(302,{ 'Location':`/admin?t=${token}` });
         res.end(); return;
       } else {
         res.writeHead(302,{'Location':'/admin-login?err=1'}); res.end(); return;
@@ -538,18 +538,15 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
-  // Check admin cookie
-  function getAdminCookie(req) {
-    const cookies = req.headers.cookie||'';
-    const cm = cookies.match(/at=([^;\s]+)/);
-    if (!cm) return false;
-    const payload = verifyToken(cm[1]);
-    return payload?.admin === true;
-  }
-
   if (p==='/admin'||p==='/admin/') {
-    if (!getAdminCookie(req)) { res.writeHead(302,{'Location':'/admin-login'}); res.end(); return; }
-    return serveFile(path.join(__dirname,'admin','index.html'), res);
+    const t = u.searchParams.get('t');
+    const payload = t ? verifyToken(t) : null;
+    if (!payload?.admin) { res.writeHead(302,{'Location':'/admin-login'}); res.end(); return; }
+    // Pass token to page via meta tag
+    const html = require('fs').readFileSync(require('path').join(__dirname,'admin','index.html'),'utf8');
+    const injected = html.replace('</head>', `<meta name="admin-token" content="${t}"></head>`);
+    res.writeHead(200,{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-cache'});
+    res.end(injected); return;
   }
   if (p.startsWith('/admin/')) {
     return serveFile(path.join(__dirname,'admin',p.slice(7)), res);
