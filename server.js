@@ -530,7 +530,7 @@ const server = http.createServer(async (req, res) => {
       console.log('LOGIN ATTEMPT, pass match:', pass===ADMIN_PASS);
       if (pass === ADMIN_PASS) {
         const token = signToken({ admin:true, exp:Date.now()+8*60*60*1000 });
-        res.writeHead(302,{ 'Location':'/admin', 'Set-Cookie':`at=${token}; Path=/; HttpOnly; Max-Age=28800; SameSite=Lax` });
+        res.writeHead(302,{ 'Location':'/admin', 'Set-Cookie':`at=${token}; Path=/; HttpOnly; Max-Age=28800; SameSite=Lax; Secure` });
         res.end(); return;
       } else {
         res.writeHead(302,{'Location':'/admin-login?err=1'}); res.end(); return;
