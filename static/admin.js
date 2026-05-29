@@ -340,6 +340,9 @@ function parseUA(ua) { if(!ua||ua==='unknown') return 'Неизв.'; if(/iPhone|
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 
-loadDashboard();
+window.onload = function() {
+  try { document.getElementById("diag").textContent = "JS OK! goPage=" + typeof goPage; } catch(e){}
+  loadDashboard();
+};
 
 try { document.getElementById("diag").textContent = "admin.js OK! goPage=" + typeof goPage; } catch(e){}
