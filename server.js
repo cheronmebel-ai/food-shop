@@ -513,6 +513,7 @@ const server = http.createServer(async (req, res) => {
 
   // ── STATIC ────────────────────────────────────────────────────────────
   if (p.startsWith('/uploads/')) return serveFile(path.join(__dirname,p), res);
+  if (p.startsWith('/static/'))  return serveFile(path.join(__dirname,'static',p.slice(8)), res);
 
   // Admin login page (no JS needed)
   if (p==='/admin-login') {
