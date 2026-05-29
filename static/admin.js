@@ -1,6 +1,4 @@
-try { document.getElementById("diag").textContent = "admin.js executing..."; } catch(e){}
-
-let TOKEN = (typeof metaToken !== 'undefined' ? metaToken : null) || sessionStorage.getItem('admin_token') || '';, allOrders=[], editProdId=null, newImages=[], existImages=[], pushHist=[], allZones=[], currentOrderId=null, ordersFilter='';
+allOrders=[], editProdId=null, newImages=[], existImages=[], pushHist=[], allZones=[], currentOrderId=null, ordersFilter='';
 
 function logout() { document.cookie='at=; Path=/; Max-Age=0'; location.href='/admin-login'; }
 
