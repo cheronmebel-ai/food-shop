@@ -153,7 +153,7 @@ function parseMultipart(req) {
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────
-const MIME = { '.html':'text/html; charset=utf-8','.js':'application/javascript','.json':'application/json','.css':'text/css','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.webp':'image/webp','.svg':'image/svg+xml','.ico':'image/x-icon' };
+const MIME = { '.html':'text/html; charset=utf-8','.js':'application/javascript; charset=utf-8','.json':'application/json','.css':'text/css','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.webp':'image/webp','.svg':'image/svg+xml','.ico':'image/x-icon' };
 function serveFile(fp, res) {
   if (!fs.existsSync(fp)) { res.writeHead(404); res.end('Not found'); return; }
   const ext = path.extname(fp).toLowerCase();
