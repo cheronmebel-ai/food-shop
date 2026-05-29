@@ -376,5 +376,11 @@ tr:hover td{background:var(--bg2)}
 </div>
 
 <script src="/static/admin.js" defer></script>
+<div id="diag" style="position:fixed;bottom:0;left:0;right:0;background:#111;color:#0f0;font-family:monospace;font-size:11px;padding:4px 8px;z-index:9999">
+  Script loading...
+</div>
+<script>
+document.getElementById('diag').textContent = 'HTML loaded, waiting for admin.js...';
+</script>
 </body>
 </html>

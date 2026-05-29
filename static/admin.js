@@ -1,3 +1,4 @@
+try { document.getElementById("diag").textContent = "admin.js executing..."; } catch(e){}
 
 let TOKEN='cookie', allOrders=[], editProdId=null, newImages=[], existImages=[], pushHist=[], allZones=[], currentOrderId=null, ordersFilter='';
 
@@ -340,3 +341,5 @@ function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;'
 
 
 loadDashboard();
+
+try { document.getElementById("diag").textContent = "admin.js OK! goPage=" + typeof goPage; } catch(e){}
