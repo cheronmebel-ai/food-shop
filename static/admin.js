@@ -3,7 +3,7 @@ let TOKEN='cookie', allOrders=[], editProdId=null, newImages=[], existImages=[],
 
 function logout() { document.cookie='at=; Path=/; Max-Age=0'; location.href='/admin-login'; }
 
-document.addEventListener('DOMContentLoaded', () => loadDashboard());
+
 
 // ── API ───────────────────────────────────────────────────────────────────
 const api = (p,o={}) => fetch(p,{...o,credentials:'include',headers:{...o.headers}});
@@ -337,3 +337,6 @@ function fmtDate(iso) { if(!iso) return '—'; return new Date(iso).toLocaleStri
 function timeAgo(iso) { if(!iso) return '—'; const d=Date.now()-new Date(iso).getTime(); if(d<60000) return 'только что'; if(d<3600000) return Math.floor(d/60000)+' мин назад'; if(d<86400000) return Math.floor(d/3600000)+' ч назад'; return Math.floor(d/86400000)+' д назад'; }
 function parseUA(ua) { if(!ua||ua==='unknown') return 'Неизв.'; if(/iPhone|iPad/.test(ua)) return '🍎 iOS'; if(/Android/.test(ua)) return '🤖 Android'; if(/Windows/.test(ua)) return '🖥 Win'; if(/Mac/.test(ua)) return '🖥 Mac'; return ua.slice(0,30); }
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+
+loadDashboard();
