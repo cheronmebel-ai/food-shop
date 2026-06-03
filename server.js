@@ -87,7 +87,7 @@ function loadVapid() {
 async function sendPush(sub, payload) {
   try {
     const wp = require('web-push');
-    wp.setVapidDetails('mailto:admin@foodshop.local', VAPID.publicKey, VAPID.privateKey);
+    wp.setVapidDetails('mailto:admin@cheron-mebel.ru', VAPID.publicKey, VAPID.privateKey);
     await wp.sendNotification({ endpoint:sub.endpoint, keys:{ p256dh:sub.p256dh, auth:sub.auth } }, JSON.stringify(payload));
     return { ok:true };
   } catch(e) {
