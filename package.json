@@ -1,0 +1,8 @@
+{
+  "name": "food-shop",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": { "start": "node server.js", "dev": "node --watch server.js" },
+  "dependencies": { "web-push": "^3.6.7" },
+  "engines": { "node": ">=18" }
+}

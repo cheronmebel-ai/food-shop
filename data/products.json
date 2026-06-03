@@ -1,0 +1,258 @@
+[
+  {
+    "id": 1,
+    "name": "Маргарита",
+    "description": "Томатный соус, моцарелла, базилик",
+    "composition": "Тесто, томатный соус, моцарелла, базилик, оливковое масло",
+    "nutrition": {
+      "cal": 220,
+      "prot": 9,
+      "fat": 8,
+      "carb": 28
+    },
+    "weight": "450г",
+    "price": 590,
+    "old_price": null,
+    "category": "Пицца",
+    "images": [],
+    "tags": [
+      "Хит"
+    ],
+    "in_stock": 1,
+    "sort": 1
+  },
+  {
+    "id": 2,
+    "name": "Пепперони",
+    "description": "Томатный соус, моцарелла, пепперони",
+    "composition": "Тесто, томатный соус, моцарелла, колбаса пепперони, специи",
+    "nutrition": {
+      "cal": 280,
+      "prot": 12,
+      "fat": 13,
+      "carb": 27
+    },
+    "weight": "480г",
+    "price": 690,
+    "old_price": 790,
+    "category": "Пицца",
+    "images": [],
+    "tags": [
+      "Хит"
+    ],
+    "in_stock": 1,
+    "sort": 2
+  },
+  {
+    "id": 3,
+    "name": "Четыре сыра",
+    "description": "Моцарелла, чеддер, пармезан, горгонзола",
+    "composition": "Тесто, соус бешамель, моцарелла, чеддер, пармезан, горгонзола",
+    "nutrition": {
+      "cal": 310,
+      "prot": 15,
+      "fat": 16,
+      "carb": 25
+    },
+    "weight": "460г",
+    "price": 790,
+    "old_price": null,
+    "category": "Пицца",
+    "images": [],
+    "tags": [],
+    "in_stock": 1,
+    "sort": 3
+  },
+  {
+    "id": 4,
+    "name": "Калифорния",
+    "description": "Краб, авокадо, огурец, икра тобико",
+    "composition": "Рис, нори, крабовое мясо, авокадо, огурец, сливочный сыр, икра тобико",
+    "nutrition": {
+      "cal": 180,
+      "prot": 8,
+      "fat": 6,
+      "carb": 24
+    },
+    "weight": "280г",
+    "price": 490,
+    "old_price": null,
+    "category": "Роллы",
+    "images": [],
+    "tags": [
+      "Хит"
+    ],
+    "in_stock": 1,
+    "sort": 4
+  },
+  {
+    "id": 5,
+    "name": "Спайси тунец",
+    "description": "Тунец, спайси соус, огурец, авокадо",
+    "composition": "Рис, нори, тунец, острый соус, огурец, авокадо, кунжут",
+    "nutrition": {
+      "cal": 160,
+      "prot": 10,
+      "fat": 5,
+      "carb": 20
+    },
+    "weight": "260г",
+    "price": 520,
+    "old_price": null,
+    "category": "Роллы",
+    "images": [],
+    "tags": [
+      "Острое"
+    ],
+    "in_stock": 1,
+    "sort": 5
+  },
+  {
+    "id": 6,
+    "name": "Радуга",
+    "description": "Лосось, тунец, угорь, авокадо, огурец",
+    "composition": "Рис, нори, лосось, тунец, угорь, авокадо, огурец, соус унаги",
+    "nutrition": {
+      "cal": 200,
+      "prot": 12,
+      "fat": 7,
+      "carb": 22
+    },
+    "weight": "300г",
+    "price": 650,
+    "old_price": 750,
+    "category": "Роллы",
+    "images": [],
+    "tags": [
+      "Новинка"
+    ],
+    "in_stock": 1,
+    "sort": 6
+  },
+  {
+    "id": 7,
+    "name": "Классик бургер",
+    "description": "Говядина, салат, помидор, огурец, соус",
+    "composition": "Булочка, котлета из говядины 150г, листья салата, помидор, маринованный огурец, соус",
+    "nutrition": {
+      "cal": 520,
+      "prot": 28,
+      "fat": 22,
+      "carb": 48
+    },
+    "weight": "320г",
+    "price": 390,
+    "old_price": null,
+    "category": "Бургеры",
+    "images": [],
+    "tags": [],
+    "in_stock": 1,
+    "sort": 7
+  },
+  {
+    "id": 8,
+    "name": "Двойной чизбургер",
+    "description": "Две котлеты, двойной сыр, бекон",
+    "composition": "Булочка, две котлеты 150г, двойной чеддер, бекон, лук, соус BBQ",
+    "nutrition": {
+      "cal": 720,
+      "prot": 42,
+      "fat": 38,
+      "carb": 46
+    },
+    "weight": "420г",
+    "price": 550,
+    "old_price": null,
+    "category": "Бургеры",
+    "images": [],
+    "tags": [
+      "Хит"
+    ],
+    "in_stock": 1,
+    "sort": 8
+  },
+  {
+    "id": 9,
+    "name": "Том Ям",
+    "description": "Острый суп с морепродуктами и грибами",
+    "composition": "Бульон, креветки, кальмар, грибы шиитаке, лемонграсс, кокосовое молоко, лайм, чили",
+    "nutrition": {
+      "cal": 120,
+      "prot": 14,
+      "fat": 4,
+      "carb": 8
+    },
+    "weight": "400мл",
+    "price": 420,
+    "old_price": null,
+    "category": "Супы",
+    "images": [],
+    "tags": [
+      "Острое"
+    ],
+    "in_stock": 1,
+    "sort": 9
+  },
+  {
+    "id": 10,
+    "name": "Борщ",
+    "description": "Классический борщ со сметаной",
+    "composition": "Свёкла, капуста, картофель, говядина, морковь, лук, томатная паста, сметана",
+    "nutrition": {
+      "cal": 90,
+      "prot": 6,
+      "fat": 3,
+      "carb": 12
+    },
+    "weight": "400мл",
+    "price": 320,
+    "old_price": null,
+    "category": "Супы",
+    "images": [],
+    "tags": [],
+    "in_stock": 1,
+    "sort": 10
+  },
+  {
+    "id": 11,
+    "name": "Сёмга на гриле",
+    "description": "Филе сёмги с овощами гриль",
+    "composition": "Филе сёмги 200г, цукини, перец болгарский, спаржа, лимон, зелень, соус тартар",
+    "nutrition": {
+      "cal": 280,
+      "prot": 32,
+      "fat": 14,
+      "carb": 6
+    },
+    "weight": "350г",
+    "price": 680,
+    "old_price": null,
+    "category": "Горячее",
+    "images": [],
+    "tags": [
+      "Новинка"
+    ],
+    "in_stock": 1,
+    "sort": 11
+  },
+  {
+    "id": 12,
+    "name": "Тирамису",
+    "description": "Классический итальянский десерт",
+    "composition": "Савоярди, маскарпоне, яйца, сахар, кофе эспрессо, какао",
+    "nutrition": {
+      "cal": 380,
+      "prot": 7,
+      "fat": 22,
+      "carb": 40
+    },
+    "weight": "150г",
+    "price": 280,
+    "old_price": null,
+    "category": "Десерты",
+    "images": [],
+    "tags": [],
+    "in_stock": 1,
+    "sort": 12
+  }
+]
