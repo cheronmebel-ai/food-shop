@@ -90,7 +90,10 @@ async function sendPush(sub, payload) {
     wp.setVapidDetails('mailto:admin@foodshop.local', VAPID.publicKey, VAPID.privateKey);
     await wp.sendNotification({ endpoint:sub.endpoint, keys:{ p256dh:sub.p256dh, auth:sub.auth } }, JSON.stringify(payload));
     return { ok:true };
-  } catch(e) { return { ok:false, error:e.message, statusCode:e.statusCode }; }
+  } catch(e) {
+    console.log('PUSH ERROR:', e.statusCode, e.message, 'endpoint:', sub.endpoint?.slice(0,60));
+    return { ok:false, error:e.message, statusCode:e.statusCode };
+  }
 }
 
 // ── JWT-like tokens ────────────────────────────────────────────────────────
